@@ -17,3 +17,6 @@ ALTER TABLE `magic`.`points` ADD UNIQUE `pointsGamePlayerIdx` (`gameId`, `player
 CREATE TABLE `magic`.`kills` ( `gameId` BIGINT UNSIGNED NOT NULL , `killerId` BIGINT UNSIGNED NULL DEFAULT NULL , `killedId` BIGINT UNSIGNED NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `kills` ADD CONSTRAINT `kills_to_game` FOREIGN KEY (`gameId`) REFERENCES `game`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `kills` ADD CONSTRAINT `kills_to_playerKiller` FOREIGN KEY (`killerId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `kills` ADD CONSTRAINT `kills_to_playerKilled` FOREIGN KEY (`killedId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `magic`.`kills` ADD UNIQUE `killsGamePlayerIdx` (`gameId`, `killerId`, `killedId`);
+
+CREATE TABLE `magic`.`quotes` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT , `playerId` BIGINT UNSIGNED NULL DEFAULT NULL , `quote` VARCHAR(255) NOT NULL , `date` DATE NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `quotes` ADD CONSTRAINT `quotes_to_player` FOREIGN KEY (`playerId`) REFERENCES `player`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
