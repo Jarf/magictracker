@@ -44,6 +44,8 @@ class Quote{
 		}
 		if(!empty($this->date)){
 			$string[] = '<br/>circa ' . date('jS F, Y', strtotime($this->date));
+		}else{
+			$string[] = ', n.d.';
 		}
 		if(!empty($string)){
 			$string = implode("", $string);

@@ -6,6 +6,9 @@
     "config": {
         "platform": {
             "php": "8.3.7"
+        },
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
         }
     }
 }
