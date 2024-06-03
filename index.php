@@ -25,6 +25,27 @@ if(!empty($urlpath)){
 	$pagevars['page_args'] = $urlpath;
 }
 
+$pagevars['navbar'] = array(
+	array(
+		'name' => 'home',
+		'url' => '/',
+		'active' => $page === 'home'
+	),
+	array(
+		'name' => 'players',
+		'url' => '/players',
+		'active' => $page === 'players'
+	),
+	array(
+		'name' => 'seasons',
+		'url' => '/seasons',
+		'active' => $page === 'seasons'
+	)
+);
+
+$pagevars['quote'] = new Quote;
+$pagevars['quote'] = $pagevars['quote']->getRandomQuote();
+
 // Page Controller
 $codepage = DIR_PAGES . $page . '.php';
 $tplfile = $page . '.twig';
@@ -43,7 +64,7 @@ $twig = new \Twig\Environment($loader, array(
 ));
 $output = array();
 $output[] = $twig->render('header.twig', $pagevars);
-if(file_exists($tplfile)){
+if(file_exists($tplpage)){
 	$output[] = $twig->render($tplfile, $pagevars);
 }
 $output[] = $twig->render('footer.twig', $pagevars);

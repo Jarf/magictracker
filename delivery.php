@@ -22,7 +22,6 @@ switch ($type) {
 
 		switch ($file) {
 			case 'main':
-				$files[] = DIR_VENDOR . 'twbs/bootstrap/dist/css/bootstrap.min.css';
 				$files[] = DIR_CSS . 'main.css';
 				break;
 
@@ -45,7 +44,6 @@ switch ($type) {
 		switch ($file) {
 			case 'main':
 				$files[] = DIR_JS . 'main.js';
-				$files[] = DIR_VENDOR . 'twbs/bootstrap/dist/js/bootstrap.bundle.js';
 				break;
 
 			default:
