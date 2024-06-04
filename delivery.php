@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . '/include/autoload.php');
 use MatthiasMullie\Minify;
 $output = $files = array();
 $file = $type = $lmod = $minifier = null;
-header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + (((60 * 60) * 24) * 30)));
+header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + (((60 * 60) * 24) * 365)));
 if(isset($_SERVER['REQUEST_URI'])){
 	$url = $_SERVER['REQUEST_URI'];
 	if(preg_match('/^\/.*\/(.*)\.(.*)$/', $url, $match) === 1){

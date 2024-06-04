@@ -4,12 +4,32 @@
          url('/fonts/planewalker-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 html{
 	font-family: 'planewalkerregular';
 	color: #000000;
 	text-align: center;
+}
+
+div#modalcontainer{
+	position: fixed;
+	top: 0;
+	left: 100%;
+	height: 100%;
+	width: 0;
+	z-index: 1;
+	overflow: hidden;
+	box-shadow: 2px 3px 20px black, 0 0 60px #8a4d0f inset;
+	background: #FCF5E5;
+	transition-duration: .5s;
+}
+
+div#modalcontainer.open{
+	width: 100%;
+	top: 0;
+	left: 0;
 }
 
 div#maincontainer{
@@ -22,4 +42,51 @@ div#maincontainer{
 	overfloy-y: auto;
 	box-shadow: 2px 3px 20px black, 0 0 60px #8a4d0f inset;
 	background: #FCF5E5;
+}
+
+div.row{
+	margin: 8px 0;
+}
+
+h1, h2, h3{
+	margin: 0;
+}
+
+button{
+	font-family: inherit;
+	background: none;
+	border: none;
+	padding-bottom: 16px;
+	img{
+		height: 100%;
+		width: 100%;
+		object-fit: contain;
+	}
+}
+
+div#gamebuttons{
+	display: block;
+	width: 100%;
+	height: 80px;
+	button{
+		display: inline-block;
+		float: left;
+		height: 100%;
+		width: 50%;
+	}
+}
+
+button#startnewgame{
+	height: 80px;
+	width: 100%;
+}
+
+hr{
+ 	border: 0;
+    height: 0;
+    box-shadow: 0 0 10px 1px #8a4d0f;
+}
+
+hr:after{
+	content: "\00a0";
 }

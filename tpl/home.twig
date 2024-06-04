@@ -1,6 +1,39 @@
 <div class="row">
-	<h2>Milkshakes El Gargling</h2>
+	<h1>Milkshakes El Gargling</h1>
 </div>
 <div class="row">
+	<h2>{{season.name}}</h2>
+	{{countdown}} days remain
+</div>
+<div class="row">
+	<h3>Scores</h3>
+	{% for score in scores %}
+		{{score.name}} - {{score.seasonPoints}}<br/>
+	{% endfor %}
+</div>
+<hr/>
+<div class="row">
 	{{quote|raw}}
+</div>
+<hr/>
+<div class="row">
+	<h3>Game {{gamecount}}</h3>
+	{{gamedate}}<br/>
+	<div id="gamebuttons">
+		<button id="gameaddkill">
+			<img alt="Add Kill" src="/img/swamp.svg"/><br/>
+			Add Kill
+		</button>
+		<button id="gameaddpoints">
+			<img alt="Add Points" src="/img/judgement.svg"/><br/>
+			Add Points
+		</button>
+	</div>
+</div>
+<hr/>
+<div class="row">
+	<button id="startnewgame">
+		<img alt="Start New Game" src="/img/desparked.svg"/>
+		Start New Game
+	</button>
 </div>
