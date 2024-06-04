@@ -94,7 +94,7 @@ hr:after{
 	content: "\00a0";
 }
 
-ul#killlist{
+ul{
 	display: block;
 	width: 100%;
 	list-style-type: none;
@@ -102,14 +102,14 @@ ul#killlist{
 	padding: 0;
 	text-align: center;
 }
-ul#killlist li{
+ul li{
 	display: table;
 	margin: 0 auto;
 }
-ul#killlist span{
+ul span{
 	display: table-cell;
 	vertical-align: middle;
-	line-height: 21px;
+	line-height: 24px;
 }
 ul#killlist img{
 	height: 27px;
@@ -131,6 +131,45 @@ ul#killlist li button.killremove{
 
 div#killform{
 	select{
+		font-family: inherit;
 		width: calc(100% - 16px);
+	}
+}
+
+ul#pointslist{
+	li{
+		line-height: 32px;
+		height: 32px;
+		span.pointslistvalues{
+			position: absolute;
+			right: 16px;
+		}
+	}
+	input[type="number"]{
+		background: none;
+		border: none;
+		font-family: inherit;
+		text-align: center;
+		height: 24px;
+		line-height: 32px;
+		padding: 0 16px;
+	}
+	button.addpoint{
+		background-image: url('/img/plus.svg');
+	}
+	button.subtractpoint{
+		background-image: url('/img/minus.svg');
+	}
+	button{
+		height: 24px;
+		width: 24px;
+		border-radius: 16px;
+		border: none;
+		box-shadow: 0 0 10px 1px #8a4d0f;
+		background-color: #FCF5E5;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 16px;
+		text-align: center;
 	}
 }

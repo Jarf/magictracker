@@ -102,5 +102,17 @@ class Game{
 		$this->db->execute();
 		return $this->db->rowCount() === 0;
 	}
+
+	public function getGamePoints(){
+		$return = array();
+		$sql = 'SELECT player.id, player.name, IFNULL(points.points, 0) AS points FROM player LEFT JOIN points ON points.playerId = player.id WHERE points.gameId = :gameId OR points.gameId IS NULL ORDER BY points.points DESC';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetchAll();
+		}
+		return $return;
+	}
 }
 ?>

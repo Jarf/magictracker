@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html');
 require_once(dirname(__DIR__) . '/include/config.php');
 require_once(dirname(__DIR__) . '/include/autoload.php');
 if(isset($_GET) && isset($_GET['killer']) && isset($_GET['killed']) && isset($_GET['game']) && is_numeric($_GET['killer']) && is_numeric($_GET['killed']) && is_numeric($_GET['game']) && isset($_GET['do'])){
