@@ -43,9 +43,6 @@ $pagevars['navbar'] = array(
 	)
 );
 
-$pagevars['quote'] = new Quote;
-$pagevars['quote'] = $pagevars['quote']->getRandomQuote();
-
 // Page Controller
 $codepage = DIR_PAGES . $page . '.php';
 $tplfile = $page . '.twig';

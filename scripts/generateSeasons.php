@@ -164,7 +164,7 @@ $month = intval(date('n'));
 $month = (round($month / 3) - 1);
 $year = intval(date('Y'));
 $nextseasonstart = date('Y-m-d', getSeason($year, $month));
-$nextseasonend = date('Y-m-d', (getSeason($year, $month + 1) - 64000));
+$nextseasonend = date('Y-m-d', (getSeason($year, $month + 1) - 86400));
 $seasonname = generateSeasonName($year, $month);
 
 $db = new db();
