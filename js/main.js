@@ -55,6 +55,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid);
 				xhttp.send();
 			}
+		}else if(button === 'addpoint' || button === 'subtractpoint'){
+			var pointinput = e.target.parentElement.querySelector('input');
+			var pointvalue = pointinput.value;
+			if(button === 'addpoint'){
+				pointvalue++;
+			}else{
+				pointvalue--;
+			}
+			if(pointvalue >= 0 && pointvalue <= 2){
+				pointinput.value = pointvalue;
+			}
 		}
 	});
 

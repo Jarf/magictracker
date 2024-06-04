@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html');
 require_once(dirname(__DIR__) . '/include/config.php');
 require_once(dirname(__DIR__) . '/include/autoload.php');
 $type = null;
@@ -44,6 +45,31 @@ if(isset($_GET) && isset($_GET['type'])){
 				</div>
 				<button id="killsubmit">Add Kill</button>
 			</div>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
+
+		case 'points':
+			$game = new Game($gameid);
+			$points = $game->getGamePoints();
+			$gamecount = $game->getGameNumber();
+			ob_start();
+			?>
+			<h1>Game <?=$gamecount?> Points</h1>
+			<hr/>
+			<ul id="pointslist">
+				<?php foreach($points as $point): ?>
+					<li>
+						<span><?=$point->name?></span>
+						<span class="pointslistvalues"><button class="addpoint"></button><input type="number" min="0" max="2" readonly value="<?=$point->points?>"/><button class="subtractpoint"></button></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<hr/>
+			<button id="savepoints">Save Points</button>
 			<hr/>
 			<button id="closemodal">Close</button>
 			<?php
