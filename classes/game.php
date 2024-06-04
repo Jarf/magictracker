@@ -54,5 +54,53 @@ class Game{
 		}
 		return $return;
 	}
+
+	public function getGameKills(){
+		$return = array();
+		$sql = 'SELECT kills.gameId, kills.killerId, (SELECT player.name FROM player WHERE player.id = kills.killerId) AS killerName, kills.killedId, (SELECT player.name FROM player WHERE player.id = kills.killedId) AS killedName FROM kills WHERE gameId = :gameId';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetchAll();
+		}
+		return $return;
+	}
+
+	public function addKill(int $killerId, int $killedId){
+		if($this->isKillValid($killedId)){
+			$sql = 'INSERT INTO kills (gameId, killerId, killedId) VALUES (:gameId, :killerId, :killedId)';
+			$this->db->query($sql);
+			$this->db->bind('gameId', $this->id);
+			$this->db->bind('killerId', $killerId);
+			$this->db->bind('killedId', $killedId);
+			$this->db->execute();
+		}
+	}
+
+	public function removeKill(int $killerId, int $killedId){
+		$sql = 'DELETE FROM kills WHERE kills.gameId = :gameId AND kills.killerID = :killerId AND kills.killedId = :killedId';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->bind('killerId', $killerId);
+		$this->db->bind('killedId', $killedId);
+		$this->db->execute();
+	}
+
+	private function isKillValid(int $killedId){
+		$sql = 'SELECT
+			kills.gameId, kills.killerId, kills.killedId
+		FROM
+			kills
+		WHERE
+			kills.gameId = :gameId AND
+			kills.killedId = :killedId
+		';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->bind('killedId', $killedId);
+		$this->db->execute();
+		return $this->db->rowCount() === 0;
+	}
 }
 ?>

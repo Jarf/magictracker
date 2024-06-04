@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 	const modal = document.getElementById('modalcontainer');
 	const modalcontent = document.getElementById('modalcontent');
+	const gameid = document.getElementById('gameid').value;
 
 	document.getElementById('gameaddkill').addEventListener('click', function(){
 		clearModal();
@@ -9,14 +10,56 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		toggleModal();
 	});
 	document.getElementById('gameaddpoints').addEventListener('click', function(){
+		clearModal();
+		populateModal('points');
 		toggleModal();
 	});
-	document.getElementById('closemodal').addEventListener('click', function(){
-		toggleModal();
+	document.getElementById('startnewgame').addEventListener('click', function(){
+		if(confirm('Are you sure?')){
+
+		}
+	});
+
+	// Dynamic listeners
+	document.addEventListener('click', function(e){
+		var button = e.target.id;
+		if(button === undefined || button.length === 0){
+			button = e.target.className;
+		}
+		console.log(button);
+		if(button === 'closemodal'){
+			toggleModal();
+		}else if(button === 'killsubmit'){
+			var killerid = document.getElementById('killkiller').value;
+			var killedid = document.getElementById('killkilled').value;
+			if(killerid === '' || killedid === ''){
+				alert('Select both a killer and killed you absolute cretin.')
+			}else{
+				clearModal();
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					populateModal('kills');
+				}
+				xhttp.open('GET', '/ajax/kills.php?do=addkill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid);
+				xhttp.send();
+			}
+		}else if(button === 'killremove'){
+			var killerid = e.target.dataset.killerid;
+			var killedid = e.target.dataset.killedid;
+			if(confirm('Remove ' + e.target.dataset.text + '?')){
+				clearModal();
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					populateModal('kills');
+				}
+				xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid);
+				xhttp.send();
+			}
+		}
 	});
 
 	function clearModal(){
-		// modalcontent.innerHTML = 'test';
+		modalcontent.innerHTML = '<img class="loading" src="/img/timespiral.svg"/>';
 	}
 
 	function populateModal(type){
@@ -24,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		xhttp.onload = function(){
 			modalcontent.innerHTML = this.responseText;
 		}
-		xhttp.open('GET', '/ajax/modalData.php?type=' + type, true);
+		xhttp.open('GET', '/ajax/modalData.php?type=' + type + '&game=' + gameid, true);
 		xhttp.send();
 	}
 

@@ -16,9 +16,9 @@ html{
 div#modalcontainer{
 	position: fixed;
 	top: 0;
-	left: 100%;
+	left: calc(100% + 16px);
 	height: 100%;
-	width: 0;
+	width: 100%;
 	z-index: 1;
 	overflow: hidden;
 	box-shadow: 2px 3px 20px black, 0 0 60px #8a4d0f inset;
@@ -42,6 +42,9 @@ div#maincontainer{
 	overfloy-y: auto;
 	box-shadow: 2px 3px 20px black, 0 0 60px #8a4d0f inset;
 	background: #FCF5E5;
+	button{
+		padding-bottom: 16px;
+	}
 }
 
 div.row{
@@ -54,9 +57,9 @@ h1, h2, h3{
 
 button{
 	font-family: inherit;
+	font-weight: bold;
 	background: none;
 	border: none;
-	padding-bottom: 16px;
 	img{
 		height: 100%;
 		width: 100%;
@@ -89,4 +92,45 @@ hr{
 
 hr:after{
 	content: "\00a0";
+}
+
+ul#killlist{
+	display: block;
+	width: 100%;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+ul#killlist li{
+	display: table;
+	margin: 0 auto;
+}
+ul#killlist span{
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 21px;
+}
+ul#killlist img{
+	height: 27px;
+	width: 27px;
+	margin: 0 16px;
+	object-fit: contain;
+}
+ul#killlist li button.killremove{
+	float: right;
+	position: absolute;
+	right: 16px;
+	height:27px;
+	width: 16px;
+	background: url('/img/tenth.svg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+div#killform{
+	select{
+		width: calc(100% - 16px);
+	}
 }
