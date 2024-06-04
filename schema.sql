@@ -13,7 +13,7 @@ CREATE TABLE `magic`.`points` ( `gameId` BIGINT UNSIGNED NOT NULL , `playerId` B
 ALTER TABLE `points` ADD CONSTRAINT `points_to_game` FOREIGN KEY (`gameId`) REFERENCES `game`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `points` ADD CONSTRAINT `points_to_player` FOREIGN KEY (`playerId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `magic`.`points` ADD UNIQUE `pointsGamePlayerIdx` (`gameId`, `playerId`);
 
-CREATE TABLE `magic`.`kills` ( `gameId` BIGINT UNSIGNED NOT NULL , `killerId` BIGINT UNSIGNED NULL DEFAULT NULL , `killedId` BIGINT UNSIGNED NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `magic`.`kills` ( `gameId` BIGINT UNSIGNED NOT NULL , `killerId` BIGINT UNSIGNED NOT NULL , `killedId` BIGINT UNSIGNED NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `kills` ADD CONSTRAINT `kills_to_game` FOREIGN KEY (`gameId`) REFERENCES `game`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `kills` ADD CONSTRAINT `kills_to_playerKiller` FOREIGN KEY (`killerId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE; ALTER TABLE `kills` ADD CONSTRAINT `kills_to_playerKilled` FOREIGN KEY (`killedId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `magic`.`kills` ADD UNIQUE `killsGamePlayerIdx` (`gameId`, `killerId`, `killedId`);
 
