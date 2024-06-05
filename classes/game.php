@@ -11,6 +11,7 @@ class Game{
 	}
 
 	private function getGame(int $id = null){
+		$where = '';
 		if(!empty($id)){
 			$where = 'WHERE game.id = :gameId ';
 		}
