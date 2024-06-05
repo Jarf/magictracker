@@ -1,3 +1,12 @@
+AuthType Basic
+AuthName "You Shall Not Pass"
+<If "%{HTTP_HOST} == 'magic.local'">
+	AuthUserFile /home/martin/www/magic/.htpasswd
+</If>
+<Else>
+	AuthUserFile /var/www/magic/.htpasswd
+</Else>
+require valid-user
 #Options +SymLinksIfOwnerMatch
 Options -Indexes
 RewriteEngine On
