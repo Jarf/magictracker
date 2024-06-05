@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.onload = function(){
 					populateModal('points');
 					refreshSeasonRankings();
+					toggleModal();
 				}
 				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs + '&_=' + timestamp, true);
 				xhttp.send();
