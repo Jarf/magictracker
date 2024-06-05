@@ -56,7 +56,7 @@ if(file_exists($codepage) && file_exists($tplpage)){
 // Page Output
 $loader = new \Twig\Loader\FilesystemLoader(array(DIR_TPL, DIR_TPL . 'include/'));
 $twig = new \Twig\Environment($loader, array(
-	'cache' => DIR_CACHE,
+	'cache' => false,
 	'debug' => ISDEV
 ));
 $output = array();
