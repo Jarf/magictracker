@@ -105,7 +105,7 @@ class Game{
 
 	public function getGamePoints(){
 		$return = array();
-		$sql = 'SELECT player.id, player.name, IFNULL(points.points, 0) AS points FROM player LEFT JOIN points ON points.playerId = player.id WHERE points.gameId = :gameId OR points.gameId IS NULL ORDER BY points.points DESC';
+		$sql = 'SELECT player.id, player.name, IFNULL(points.points, 0) AS points FROM player LEFT JOIN points ON points.playerId = player.id AND points.gameId = :gameId WHERE points.gameId = :gameId OR points.gameId IS NULL ORDER BY points.points DESC';
 		$this->db->query($sql);
 		$this->db->bind('gameId', $this->id);
 		$this->db->execute();
@@ -133,6 +133,13 @@ class Game{
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
+		$this->db->execute();
+	}
+
+	public function startNewGame(int $seasonId){
+		$sql = 'INSERT INTO game (seasonId) VALUES (:seasonId)';
+		$this->db->query($sql);
+		$this->db->bind('seasonId', $seasonId);
 		$this->db->execute();
 	}
 }

@@ -17,7 +17,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	});
 	document.getElementById('startnewgame').addEventListener('click', function(){
 		if(confirm('Are you sure?')){
-
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function(){
+				location.reload();
+			}
+			xhttp.open('GET', '/ajax/game.php?do=startNewGame');
+			xhttp.send();
 		}
 	});
 
