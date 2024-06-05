@@ -5,7 +5,7 @@
 	<h2>{{season.name}}</h2>
 	{{countdown}} days remain
 </div>
-<div class="row">
+<div class="row" id="seasonscores">
 	<h3>Scores</h3>
 	{% for score in scores %}
 		{{score.name}} - {{score.seasonPoints}}<br/>

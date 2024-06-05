@@ -76,6 +76,19 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'seasonranking':
+			$season = new Season();
+			$ranking = $season->getSeasonRanking();
+			ob_start();
+			?>
+			<h3>Scores</h3>
+			<?php foreach($ranking as $rank): ?>
+				<?=$rank->name?> - <?=$rank->seasonPoints?><br/>
+			<?php endforeach;
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();
