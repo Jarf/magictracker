@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	// Dynamic listeners
 	document.addEventListener('click', function(e){
 		var button = e.target.id;
+		var timestamp = Date.now();
 		if(button === undefined || button.length === 0){
 			button = e.target.className;
 		}
@@ -46,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.onload = function(){
 					populateModal('kills');
 				}
-				xhttp.open('GET', '/ajax/kills.php?do=addkill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid);
+				xhttp.open('GET', '/ajax/kills.php?do=addkill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
 				xhttp.send();
 			}
 		}else if(button === 'killremove'){
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.onload = function(){
 					populateModal('kills');
 				}
-				xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid);
+				xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
 				xhttp.send();
 			}
 		}else if(button === 'addpoint' || button === 'subtractpoint'){
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					populateModal('points');
 					refreshSeasonRankings();
 				}
-				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs);
+				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs + '&_=' + timestamp, true);
 				xhttp.send();
 			}
 		}
@@ -95,11 +96,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	}
 
 	function populateModal(type){
+		var timestamp = Date.now();
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function(){
 			modalcontent.innerHTML = this.responseText;
 		}
-		xhttp.open('GET', '/ajax/modalData.php?type=' + type + '&game=' + gameid, true);
+		xhttp.open('GET', '/ajax/modalData.php?type=' + type + '&game=' + gameid + '&_=' + timestamp, true);
 		xhttp.send();
 	}
 
@@ -109,11 +111,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	}
 
 	function refreshSeasonRankings(){
+		var timestamp = Date.now();
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function(){
 			seasonrankings.innerHTML = this.responseText;
 		}
-		xhttp.open('GET', '/ajax/modalData.php?type=seasonranking');
+		xhttp.open('GET', '/ajax/modalData.php?type=seasonranking&_=' + timestamp, true);
 		xhttp.send();
 	}
 });
