@@ -66,6 +66,20 @@ document.addEventListener('DOMContentLoaded', function(event) {
 			if(pointvalue >= 0 && pointvalue <= 2){
 				pointinput.value = pointvalue;
 			}
+		}else if(button === 'savepoints'){
+			var pointinputs = document.querySelectorAll('ul#pointslist span.pointslistvalues input');
+			var getargs = '';
+			for (let i = 0; i < pointinputs.length; i++){
+				getargs += '&points[' + pointinputs[i].dataset.player + ']=' + pointinputs[i].value;
+			}
+			if(getargs !== ''){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					populateModal('points');
+				}
+				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs);
+				xhttp.send();
+			}
 		}
 	});
 
