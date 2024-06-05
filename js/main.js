@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	const modal = document.getElementById('modalcontainer');
 	const modalcontent = document.getElementById('modalcontent');
 	const gameid = document.getElementById('gameid').value;
+	const seasonrankings = document.getElementById('seasonscores');
 
 	document.getElementById('gameaddkill').addEventListener('click', function(){
 		clearModal();
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function(){
 					populateModal('points');
+					refreshSeasonRankings();
 				}
 				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs);
 				xhttp.send();
@@ -99,5 +101,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	function toggleModal(){
 		modal.classList.toggle('open');
 		modal.classList.toggle('closed');
+	}
+
+	function refreshSeasonRankings(){
+		const xhttp = new XMLHttpRequest();
+		xhttp.onload = function(){
+			seasonrankings.innerHTML = this.responseText;
+		}
+		xhttp.open('GET', '/ajax/modalData.php?type=seasonranking');
+		xhttp.send();
 	}
 });
