@@ -4,7 +4,7 @@ AuthName "You Shall Not Pass"
 	AuthUserFile /home/martin/www/magic/.htpasswd
 </If>
 <Else>
-	AuthUserFile /var/www/magic/.htpasswd
+	AuthUserFile /var/www/magictracker/.htpasswd
 </Else>
 require valid-user
 #Options +SymLinksIfOwnerMatch
