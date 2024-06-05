@@ -18,9 +18,13 @@
 <hr/>
 <div class="row">
 	<input type="hidden" id="gameid" value="{{game.id}}"/>
+	{% if game.id is empty %}
+	<h3>No Games</h3>
+	{% else %}
 	<h3>Game {{gamecount}}</h3>
 	{{gamedate}}<br/>
-	<div id="gamebuttons">
+	{% endif %}
+	<div id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
 		<button id="gameaddkill">
 			<img alt="Add Kill" src="/img/swamp.svg"/><br/>
 			Add Kill
