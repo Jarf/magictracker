@@ -64,7 +64,7 @@ if(isset($_GET) && isset($_GET['type'])){
 				<?php foreach($points as $point): ?>
 					<li>
 						<span><?=$point->name?></span>
-						<span class="pointslistvalues"><button class="addpoint"></button><input type="number" min="0" max="2" readonly value="<?=$point->points?>"/><button class="subtractpoint"></button></span>
+						<span class="pointslistvalues"><button class="addpoint"></button><input data-player="<?=$point->id?>" type="number" min="0" max="2" readonly value="<?=$point->points?>"/><button class="subtractpoint"></button></span>
 					</li>
 				<?php endforeach; ?>
 			</ul>

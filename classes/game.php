@@ -114,5 +114,26 @@ class Game{
 		}
 		return $return;
 	}
+
+	public function updateGamePoints(array $points){
+		$insert = array();
+		foreach($points as $playerId => $pointsVal){
+			if($pointsVal > 0){
+				$bind['points' . $playerId] = intval($pointsVal);
+				$insert[] = '(:gameId, ' . $playerId . ', :points' . $playerId . ')';
+			}
+		}
+		$sql = 'DELETE FROM points WHERE points.gameId = :gameId';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->execute();
+		$sql = 'INSERT INTO points (gameId, playerId, points) VALUES ' . implode(',', $insert);
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+	}
 }
 ?>
