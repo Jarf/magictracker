@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		if(button === undefined || button.length === 0){
 			button = e.target.className;
 		}
-		console.log(button);
 		if(button === 'closemodal'){
 			toggleModal();
 		}else if(button === 'killsubmit'){
