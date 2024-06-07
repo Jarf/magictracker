@@ -32,6 +32,15 @@ class Quote{
 		return $this->quoteAsString();
 	}
 
+	public function addQuote(string $quote, int $author = null, string $date = null){
+		$sql = 'INSERT INTO quotes (playerId, quote, date) VALUES (:playerId, :quote, :date)';
+		$this->db->query($sql);
+		$this->db->bind('playerId', $author);
+		$this->db->bind('quote', $quote);
+		$this->db->bind('date', $date);
+		$this->db->execute();
+	}
+
 	private function quoteAsString(){
 		$string = array();
 		if(!empty($this->quote)){
