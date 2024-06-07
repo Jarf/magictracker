@@ -114,6 +114,31 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'quote':
+			$players = new Player();
+			$players = $players->getPlayers();
+			ob_start();
+			?>
+			<h1>Add Quote</h1>
+			<hr/>
+			<textarea id="quoteinput" name="quoteinput" rows="2"></textarea><br/>
+			<select id="quoteauthor" name="quoteauthor">
+				<option value="0" disabled selected>Who said it?</option>
+				<option value="0">Unknown</option>
+				<?php foreach($players as $player): ?>
+					<option value="<?=$player->id?>"><?=$player->name?></option>
+				<?php endforeach; ?>
+			</select><br/>
+			<input id="quotedate" name="quotedate" type="date"/>
+			<hr/>
+			<button id="savequote">Save Quote</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();

@@ -81,14 +81,14 @@ button{
 	}
 }
 
-div#gamebuttons{
+div#gamebuttons, div#otherbuttons{
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	width: 100%;
 }
 
-div#gamebuttons > button.gamebutton{
+div#gamebuttons > button.gamebutton, div#otherbuttons > button.otherbutton{
 	flex-basis: 84px;
 }
 
@@ -142,11 +142,14 @@ ul#killlist li button.killremove{
 	background-size: contain;
 }
 
-div#killform{
-	select{
-		font-family: inherit;
-		width: calc(100% - 16px);
-	}
+select{
+	font-family: inherit;
+	width: calc(100% - 16px);
+}
+
+input#quotedate, textarea#quoteinput, select{
+	font-family: inherit;
+	width: calc(100% - 16px);
 }
 
 ul#pointslist{

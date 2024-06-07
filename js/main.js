@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 			xhttp.send();
 		}
 	});
+	document.getElementById('quotebox').addEventListener('click', function(){
+		clearModal();
+		populateModal('quote');
+		toggleModal();
+	});
 
 	// Dynamic listeners
 	document.addEventListener('click', function(e){
@@ -103,6 +108,22 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				toggleModal();
 			}
 			xhttp.open('GET', '/ajax/concedes.php?do=updateConcedes&game=' + gameid + getargs + '&_=' + timestamp, true);
+			xhttp.send();
+		}else if(button === 'savequote'){
+			var params = new Object();
+			params.quote = document.getElementById('quoteinput').value;
+			params.author = document.getElementById('quoteauthor').value;
+			params.date = document.getElementById('quotedate').value;
+			var getargs = '';
+			for(name in params){
+				getargs += '&' + encodeURIComponent(name)+'='+encodeURIComponent(params[name]);
+			}
+			getargs = getargs.substring(1)
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function(){
+				toggleModal();
+			}
+			xhttp.open('GET', '/ajax/quote.php?' + getargs, true);
 			xhttp.send();
 		}
 	});
