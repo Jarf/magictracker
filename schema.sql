@@ -1,3 +1,4 @@
+-- Initial Schema
 CREATE TABLE `magic`.`player` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 CREATE TABLE `magic`.`season` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NULL DEFAULT NULL , `startDate` DATE NULL DEFAULT NULL , `endDate` DATE NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
@@ -19,3 +20,6 @@ ALTER TABLE `magic`.`kills` ADD UNIQUE `killsGamePlayerIdx` (`gameId`, `killerId
 
 CREATE TABLE `magic`.`quotes` ( `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT , `playerId` BIGINT UNSIGNED NULL DEFAULT NULL , `quote` VARCHAR(255) NOT NULL , `date` DATE NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `quotes` ADD CONSTRAINT `quotes_to_player` FOREIGN KEY (`playerId`) REFERENCES `player`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Add timestamp to kills table
+ALTER TABLE `kills` ADD `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `killedId`;

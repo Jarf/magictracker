@@ -143,5 +143,38 @@ class Game{
 		$this->db->bind('seasonId', $seasonId);
 		$this->db->execute();
 	}
+
+	public function getGameConcedes(){
+		$return = array();
+		$sql = 'SELECT player.id, player.name, IF(concede.playerId IS NULL, 0, 1) AS concede FROM player LEFT JOIN concede ON concede.playerId = player.id AND concede.gameId = :gameId WHERE concede.gameId = :gameId OR concede.gameId IS NULL';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetchAll();
+		}
+		return $return;
+	}
+
+	public function updateGameConcedes(array $concedes){
+		$sql = 'DELETE FROM concede WHERE concede.gameId = :gameId';
+		$this->db->query($sql);
+		$this->db->bind('gameId', $this->id);
+		$this->db->execute();
+		if(!empty($concedes)){
+			$insert = $bind = array();
+			foreach($concedes as $ckey => $concede){
+				$insert[] = '(:gameId, :playerId' . $ckey . ')';
+				$bind['playerId' . $ckey] = $concede;
+			}
+			$sql = 'INSERT INTO concede (gameId, playerId) VALUES ' . implode(',', $insert);
+			$this->db->query($sql);
+			$this->db->bind('gameId', $this->id);
+			foreach($bind as $key => $val){
+				$this->db->bind($key, $val);
+			}
+			$this->db->execute();
+		}
+	}
 }
 ?>

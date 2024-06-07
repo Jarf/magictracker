@@ -24,16 +24,20 @@
 	<h3>Game {{gamecount}}</h3>
 	{{gamedate}}<br/>
 	{% endif %}
-	<div id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
-		<button id="gameaddkill">
-			<img alt="Skull" src="/img/swamp.svg"/><br/>
-			Add Kill
-		</button>
-		<button id="gameaddpoints">
-			<img alt="Scales" src="/img/judgement.svg"/><br/>
-			Add Points
-		</button>
-	</div>
+</div>
+<div class="row" id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
+	<button class="gamebutton" id="gameaddconcede">
+		<img alt="Skull" src="/img/breaking.svg"/><br/>
+		Concedes
+	</button>
+	<button class="gamebutton" id="gameaddkill">
+		<img alt="Skull" src="/img/swamp.svg"/><br/>
+		Kills
+	</button>
+	<button class="gamebutton" id="gameaddpoints">
+		<img alt="Scales" src="/img/judgement.svg"/><br/>
+		Points
+	</button>
 </div>
 <hr/>
 <div class="row">

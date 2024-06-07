@@ -13,6 +13,14 @@ html{
 	text-align: center;
 }
 
+img.loading{
+	display: block;
+	height: 100%;
+	width: 100%;
+	object-position: center;
+	transform: scale(0.1);
+}
+
 div#modalcontainer{
 	position: fixed;
 	top: 0;
@@ -30,6 +38,12 @@ div#modalcontainer.open{
 	width: 100%;
 	top: 0;
 	left: 0;
+}
+
+div#modalcontainer > div#modalcontent{
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 
 div#maincontainer{
@@ -68,15 +82,14 @@ button{
 }
 
 div#gamebuttons{
-	display: block;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 	width: 100%;
-	height: 80px;
-	button{
-		display: inline-block;
-		float: left;
-		height: 100%;
-		width: 50%;
-	}
+}
+
+div#gamebuttons > button.gamebutton{
+	flex-basis: 84px;
 }
 
 button#startnewgame{
