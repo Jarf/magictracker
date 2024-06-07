@@ -61,10 +61,9 @@ RewriteCond %{REQUEST_URI} !.*\.webp$ [NC]
 RewriteCond %{REQUEST_URI} !.*\.woff2?$ [NC]
 RewriteRule .* /index.php
 
-FileETag All
 <IfModule mod_expires.c>
 	ExpiresActive on
-	ExpiresDefault "access plus 2 months"
+	ExpiresDefault "modification"
 	ExpiresByType image/jpg "access plus 1 year"
 	ExpiresByType image/jpeg "access plus 1 year"
 	ExpiresByType image/png "access plus 1 year"
