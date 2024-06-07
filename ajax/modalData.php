@@ -77,6 +77,31 @@ if(isset($_GET) && isset($_GET['type'])){
 			print $html;
 			break;
 
+		case 'concedes':
+			$game = new Game($gameid);
+			$concedes = $game->getGameConcedes();
+			$gamecount = $game->getGameNumber();
+			ob_start();
+			?>
+			<h1>Game <?=$gamecount?> Concedes</h1>
+			<hr/>
+			<ul id="concedeslist">
+				<?php foreach($concedes as $ckey => $concede): ?>
+					<li>
+						<label for="concedeinput<?=$ckey?>"><?=$concede->name?></label>
+						<input class="concedeinput" value="<?=$concede->id?>" id="concedeinput<?=$ckey?>" type="checkbox" <?=!empty($concede->concede) ? 'checked' : ''?>/>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<hr/>
+			<button id="saveconcedes">Save Concedes</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
+
 		case 'seasonranking':
 			$season = new Season();
 			$ranking = $season->getSeasonRanking();

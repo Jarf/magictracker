@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('points');
 		toggleModal();
 	});
+	document.getElementById('gameaddconcede').addEventListener('click', function(){
+		clearModal();
+		populateModal('concedes');
+		toggleModal();
+	});
 	document.getElementById('startnewgame').addEventListener('click', function(){
 		if(confirm('Are you sure?')){
 			const xhttp = new XMLHttpRequest();
@@ -81,13 +86,24 @@ document.addEventListener('DOMContentLoaded', function(event) {
 			if(getargs !== ''){
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function(){
-					populateModal('points');
 					refreshSeasonRankings();
 					toggleModal();
 				}
 				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs + '&_=' + timestamp, true);
 				xhttp.send();
 			}
+		}else if(button === 'saveconcedes'){
+			var concedeinputs = document.querySelectorAll('ul#concedeslist input.concedeinput:checked');
+			var getargs = '';
+			for (let i = 0; i < concedeinputs.length; i++){
+				getargs += '&concede[]=' + concedeinputs[i].value;
+			}
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function(){
+				toggleModal();
+			}
+			xhttp.open('GET', '/ajax/concedes.php?do=updateConcedes&game=' + gameid + getargs + '&_=' + timestamp, true);
+			xhttp.send();
 		}
 	});
 
