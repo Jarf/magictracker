@@ -9,8 +9,8 @@ if(isset($_GET['quote']) && isset($_GET['author']) && isset($_GET['date'])){
 	$quotetext = nl2br($quotetext);
 	$quotetext = trim($quotetext);
 	if(!empty($quotetext)){
-		if(!empty($_GET['author']) && is_numeric($_GET['quote'])){
-			$author = intval($_GET['quote']);
+		if(!empty($_GET['author']) && is_numeric($_GET['author'])){
+			$author = intval($_GET['author']);
 		}
 		if(!empty($_GET['date']) && preg_match('/(\d{4})\-(\d{2})\-(\d{2})/', $_GET['date']) === 1){
 			$date = $_GET['date'];
