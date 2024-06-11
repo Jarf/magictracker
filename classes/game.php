@@ -58,7 +58,7 @@ class Game{
 
 	public function getGameKills(){
 		$return = array();
-		$sql = 'SELECT kills.gameId, kills.killerId, (SELECT player.name FROM player WHERE player.id = kills.killerId) AS killerName, kills.killedId, (SELECT player.name FROM player WHERE player.id = kills.killedId) AS killedName FROM kills WHERE gameId = :gameId';
+		$sql = 'SELECT kills.gameId, kills.killerId, (SELECT player.name FROM player WHERE player.id = kills.killerId) AS killerName, kills.killedId, (SELECT player.name FROM player WHERE player.id = kills.killedId) AS killedName FROM kills WHERE gameId = :gameId ORDER BY kills.timestamp ASC';
 		$this->db->query($sql);
 		$this->db->bind('gameId', $this->id);
 		$this->db->execute();
