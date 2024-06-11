@@ -35,7 +35,7 @@ class Game{
 
 	public function printDate(){
 		$return = false;
-		if(!empty($this->date)){
+		if(isset($this->date) && !empty($this->date)){
 			$return = date('jS F, Y', strtotime($this->date));
 		}
 		return $return;

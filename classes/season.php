@@ -6,21 +6,30 @@ class Season{
 	public string $endDate;
 	private $db;
 
-	public function __construct(int $id = null){
+	public function __construct(int $id = null, int $gameid = null){
 		$this->db = new DB();
-		$this->getSeason($id);
+		$this->getSeason($id, $gameid);
 	}
 
-	private function getSeason(int $id = null){
+	private function getSeason(int $id = null, int $gameid = null){
+		$bind = array();
 		if(!empty($id)){
 			$where = 'season.id = :seasonId';
-		}else{
+			$bind['seasonId'] = $id;
+		}
+		if(!empty($gameid)){
+			$where = 'game.id = :gameId';
+			$bind['gameId'] = $gameid;
+		}
+		if(empty($id) && empty($gameid)){
 			$where = 'season.startDate <= NOW() AND season.endDate >= NOW()';
 		}
-		$sql = 'SELECT season.id, season.name, season.startDate, season.endDate FROM season WHERE ' . $where . ' LIMIT 1';
+		$sql = 'SELECT season.id, season.name, season.startDate, season.endDate FROM season LEFT JOIN game ON season.id = game.seasonId WHERE ' . $where . ' LIMIT 1';
 		$this->db->query($sql);
-		if(!empty($id)){
-			$this->db->bind('seasonId', $id);
+		if(!empty($bind)){
+			foreach($bind as $key => $val){
+				$this->db->bind($key, $val);
+			}
 		}
 		$this->db->execute();
 		$return = false;
