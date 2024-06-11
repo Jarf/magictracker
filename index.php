@@ -10,12 +10,17 @@ $pagevars = array(
 );
 $urlpath = explode('/', $urlpath);
 $page = current($urlpath);
+$gameid = null;
 switch ($page) {
 	case '':
+	default:
+		if(is_numeric($page)){
+			$gameid = intval($page);
+		}
 		$page = 'home';
 		break;
 }
-
+$pagevars['gameid'] = $gameid;
 if(isset($urlpath[0])){
 	unset($urlpath[0]);
 }
@@ -24,24 +29,6 @@ $pagevars['page_title'] = ucwords(str_replace('-', ' ', $page));
 if(!empty($urlpath)){
 	$pagevars['page_args'] = $urlpath;
 }
-
-$pagevars['navbar'] = array(
-	array(
-		'name' => 'home',
-		'url' => '/',
-		'active' => $page === 'home'
-	),
-	array(
-		'name' => 'players',
-		'url' => '/players',
-		'active' => $page === 'players'
-	),
-	array(
-		'name' => 'seasons',
-		'url' => '/seasons',
-		'active' => $page === 'seasons'
-	)
-);
 
 // Page Controller
 $codepage = DIR_PAGES . $page . '.php';
