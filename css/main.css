@@ -190,6 +190,14 @@ ul#pointslist{
 	}
 }
 
+table{
+	width: 100%;
+}
+
 .hidden{
 	display: none !important; 
+}
+
+a{
+	text-decoration: none;
 }

@@ -139,6 +139,27 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'games':
+			$season = new Season(null, $gameid);
+			$games = $season->getSeasonGames();
+			ob_start();
+			?>
+			<h1><?=$season->name?></h1>
+			<h3>Game List</h3>
+			<hr/>
+			Select a game to load it
+			<ul>
+				<?php foreach($games as $game): ?>
+					<li><a href="/<?=$game->id?>"><?=$game->name?> - <?=$game->date?></a></li>
+				<?php endforeach; ?>
+			</ul>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();
