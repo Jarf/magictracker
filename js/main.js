@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		if(confirm('Are you sure?')){
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function(){
-				location.reload();
+				location.assign('/');
 			}
 			xhttp.open('GET', '/ajax/game.php?do=startNewGame');
 			xhttp.send();
@@ -35,96 +35,113 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('quote');
 		toggleModal();
 	});
+	document.getElementById('gamedisplay').addEventListener('click', function(){
+		clearModal();
+		populateModal('games');
+		toggleModal();
+	});
 
 	// Dynamic listeners
 	document.addEventListener('click', function(e){
 		var button = e.target.id;
 		var timestamp = Date.now();
+		const xhttp = new XMLHttpRequest();
 		if(button === undefined || button.length === 0){
 			button = e.target.className;
 		}
-		if(button === 'closemodal'){
-			toggleModal();
-		}else if(button === 'killsubmit'){
-			var killerid = document.getElementById('killkiller').value;
-			var killedid = document.getElementById('killkilled').value;
-			if(killerid === '' || killedid === ''){
-				alert('Select both a killer and killed you absolute cretin.')
-			}else{
-				clearModal();
-				const xhttp = new XMLHttpRequest();
-				xhttp.onload = function(){
-					populateModal('kills');
+		console.log(button);
+		switch (button){
+			case 'closemodal':
+				toggleModal();
+				break;
+
+			case 'killsubmit':
+				var killerid = document.getElementById('killkiller').value;
+				var killedid = document.getElementById('killkilled').value;
+				if(killerid === '' || killedid === ''){
+					alert('Select both a killer and killed you absolute cretin.')
+				}else{
+					clearModal();
+					xhttp.onload = function(){
+						populateModal('kills');
+					}
+					xhttp.open('GET', '/ajax/kills.php?do=addkill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
+					xhttp.send();
 				}
-				xhttp.open('GET', '/ajax/kills.php?do=addkill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
-				xhttp.send();
-			}
-		}else if(button === 'killremove'){
-			var killerid = e.target.dataset.killerid;
-			var killedid = e.target.dataset.killedid;
-			if(confirm('Remove ' + e.target.dataset.text + '?')){
-				clearModal();
-				const xhttp = new XMLHttpRequest();
-				xhttp.onload = function(){
-					populateModal('kills');
+				break;
+
+			case 'killremove':
+				var killerid = e.target.dataset.killerid;
+				var killedid = e.target.dataset.killedid;
+				if(confirm('Remove ' + e.target.dataset.text + '?')){
+					clearModal();
+					xhttp.onload = function(){
+						populateModal('kills');
+					}
+					xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
+					xhttp.send();
 				}
-				xhttp.open('GET', '/ajax/kills.php?do=removekill&killer=' + killerid + '&killed=' + killedid + '&game=' + gameid + '&_=' + timestamp, true);
-				xhttp.send();
-			}
-		}else if(button === 'addpoint' || button === 'subtractpoint'){
-			var pointinput = e.target.parentElement.querySelector('input');
-			var pointvalue = pointinput.value;
-			if(button === 'addpoint'){
-				pointvalue++;
-			}else{
-				pointvalue--;
-			}
-			if(pointvalue >= 0 && pointvalue <= 2){
-				pointinput.value = pointvalue;
-			}
-		}else if(button === 'savepoints'){
-			var pointinputs = document.querySelectorAll('ul#pointslist span.pointslistvalues input');
-			var getargs = '';
-			for (let i = 0; i < pointinputs.length; i++){
-				getargs += '&points[' + pointinputs[i].dataset.player + ']=' + pointinputs[i].value;
-			}
-			if(getargs !== ''){
-				const xhttp = new XMLHttpRequest();
+				break;
+
+			case 'addpoint':
+			case 'subtractpoint':
+				var pointinput = e.target.parentElement.querySelector('input');
+				var pointvalue = pointinput.value;
+				if(button === 'addpoint'){
+					pointvalue++;
+				}else{
+					pointvalue--;
+				}
+				if(pointvalue >= 0 && pointvalue <= 2){
+					pointinput.value = pointvalue;
+				}
+				break;
+
+			case 'savepoints':
+				var pointinputs = document.querySelectorAll('ul#pointslist span.pointslistvalues input');
+				var getargs = '';
+				for (let i = 0; i < pointinputs.length; i++){
+					getargs += '&points[' + pointinputs[i].dataset.player + ']=' + pointinputs[i].value;
+				}
+				if(getargs !== ''){
+					xhttp.onload = function(){
+						refreshSeasonRankings();
+						toggleModal();
+					}
+					xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs + '&_=' + timestamp, true);
+					xhttp.send();
+				}
+				break;
+
+			case 'saveconcedes':
+				var concedeinputs = document.querySelectorAll('ul#concedeslist input.concedeinput:checked');
+				var getargs = '';
+				for (let i = 0; i < concedeinputs.length; i++){
+					getargs += '&concede[]=' + concedeinputs[i].value;
+				}
 				xhttp.onload = function(){
-					refreshSeasonRankings();
 					toggleModal();
 				}
-				xhttp.open('GET', '/ajax/points.php?do=addPoints&game=' + gameid + getargs + '&_=' + timestamp, true);
+				xhttp.open('GET', '/ajax/concedes.php?do=updateConcedes&game=' + gameid + getargs + '&_=' + timestamp, true);
 				xhttp.send();
-			}
-		}else if(button === 'saveconcedes'){
-			var concedeinputs = document.querySelectorAll('ul#concedeslist input.concedeinput:checked');
-			var getargs = '';
-			for (let i = 0; i < concedeinputs.length; i++){
-				getargs += '&concede[]=' + concedeinputs[i].value;
-			}
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function(){
-				toggleModal();
-			}
-			xhttp.open('GET', '/ajax/concedes.php?do=updateConcedes&game=' + gameid + getargs + '&_=' + timestamp, true);
-			xhttp.send();
-		}else if(button === 'savequote'){
-			var params = new Object();
-			params.quote = document.getElementById('quoteinput').value;
-			params.author = document.getElementById('quoteauthor').value;
-			params.date = document.getElementById('quotedate').value;
-			var getargs = '';
-			for(name in params){
-				getargs += '&' + encodeURIComponent(name)+'='+encodeURIComponent(params[name]);
-			}
-			getargs = getargs.substring(1)
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function(){
-				toggleModal();
-			}
-			xhttp.open('GET', '/ajax/quote.php?' + getargs, true);
-			xhttp.send();
+				break;
+
+			case 'savequote':
+				var params = new Object();
+				params.quote = document.getElementById('quoteinput').value;
+				params.author = document.getElementById('quoteauthor').value;
+				params.date = document.getElementById('quotedate').value;
+				var getargs = '';
+				for(name in params){
+					getargs += '&' + encodeURIComponent(name)+'='+encodeURIComponent(params[name]);
+				}
+				getargs = getargs.substring(1)
+				xhttp.onload = function(){
+					toggleModal();
+				}
+				xhttp.open('GET', '/ajax/quote.php?' + getargs, true);
+				xhttp.send();
+				break;
 		}
 	});
 

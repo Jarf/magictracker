@@ -55,5 +55,23 @@ class Season{
 		}
 		return $return;
 	}
+
+	public function getSeasonGames(){
+		$return = array();
+		if(!empty($this->id)){
+			$sql = 'SELECT game.id, game.date FROM game WHERE game.seasonId = :seasonId ORDER BY game.id ASC';
+			$this->db->query($sql);
+			$this->db->bind('seasonId', $this->id);
+			$this->db->execute();
+			if($this->db->rowCount() > 0){
+				$return = $this->db->fetchAll();
+				foreach($return as $rkey => $row){
+					$return[$rkey]->name = 'Game ' . ($rkey + 1);
+				}
+			}
+		}
+		$return = array_reverse($return);
+		return $return;
+	}
 }
 ?>
