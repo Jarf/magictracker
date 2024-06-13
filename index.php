@@ -10,8 +10,15 @@ $pagevars = array(
 );
 $urlpath = explode('/', $urlpath);
 $page = current($urlpath);
-$gameid = null;
+$gameid = $seasonid = null;
 switch ($page) {
+	case 'stats':
+		$endarg = end($urlpath);
+		if(is_numeric($endarg)){
+			$seasonid = intval($endarg);
+		}
+		break;
+
 	case '':
 	default:
 		if(is_numeric($page)){
@@ -21,6 +28,7 @@ switch ($page) {
 		break;
 }
 $pagevars['gameid'] = $gameid;
+$pagevars['seasonid'] = $seasonid;
 if(isset($urlpath[0])){
 	unset($urlpath[0]);
 }

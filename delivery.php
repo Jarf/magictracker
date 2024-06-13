@@ -6,7 +6,7 @@ $output = $files = array();
 $file = $type = $lmod = $minifier = null;
 header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + (((60 * 60) * 24) * 365)));
 if(isset($_SERVER['REQUEST_URI'])){
-	$url = $_SERVER['REQUEST_URI'];
+	$url = strtok($_SERVER['REQUEST_URI'], '?');
 	if(preg_match('/^\/.*\/(.*)\.(.*)$/', $url, $match) === 1){
 		$file = $match[1];
 		$type = $match[2];
@@ -21,12 +21,8 @@ switch ($type) {
 		$minifier = new Minify\CSS;
 
 		switch ($file) {
-			case 'main':
-				$files[] = DIR_CSS . 'main.css';
-				break;
-
 			default:
-				$default = DIR_CSS . $file . '.css';
+				$default = DIR_CSS . 'global.css';
 				if(!file_exists($default)){
 					display404();
 				}else{
@@ -42,12 +38,8 @@ switch ($type) {
 		$minifier = new Minify\JS;
 
 		switch ($file) {
-			case 'main':
-				$files[] = DIR_JS . 'main.js';
-				break;
-
 			default:
-				$default = DIR_JS . $file . '.css';
+				$default = DIR_JS . $file . '.js';
 				if(!file_exists($default)){
 					display404();
 				}else{

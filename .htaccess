@@ -38,7 +38,7 @@ RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Send resources to delivery
-RewriteRule ^((css|js)/(.*).(css|js)(\?_=(.*)))|sitemap.xml|robots.txt$ delivery.php [END]
+RewriteRule ^(css|js)\/(.*).(css|js)|sitemap.xml|robots.txt$ delivery.php [END]
 
 # MIME types
 AddType image/x-icon .ico
