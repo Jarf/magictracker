@@ -91,6 +91,7 @@ div#gamebuttons, div#otherbuttons{
 
 div#gamebuttons > button.gamebutton, div#otherbuttons > button.otherbutton{
 	flex-basis: 84px;
+	height: 110px;
 }
 
 button#startnewgame{
@@ -201,4 +202,5 @@ table{
 
 a{
 	text-decoration: none;
+	color: inherit;
 }
