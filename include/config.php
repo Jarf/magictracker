@@ -40,4 +40,6 @@ if(isset($_SERVER['HTTP_HOST'])){
 	}
 }
 define('ISDEV', $dev);
+
+define('HASH', trim(substr(md5(file_get_contents(sprintf(DIR_ROOT . '.git/refs/heads/%s', 'master'))), 0, 8)));
 ?>
