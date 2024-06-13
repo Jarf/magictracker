@@ -44,13 +44,18 @@ class Game{
 	public function getGameNumber(){
 		$return = false;
 		if(!empty($this->seasonId)){
-			$sql = 'SELECT COUNT(game.id) AS gamecount FROM game WHERE game.seasonId = :seasonId GROUP BY game.seasonId LIMIT 1';
+			$sql = 'SELECT game.id FROM game WHERE game.seasonId = :seasonId ORDER BY game.date ASC';
 			$this->db->query($sql);
 			$this->db->bind('seasonId', $this->seasonId);
 			$this->db->execute();
 			if($this->db->rowCount() > 0){
-				$return = $this->db->fetch();
-				$return = $return->gamecount;
+				$return = $this->db->fetchAll();
+				foreach($return as $key => $row){
+					if(intval($row->id) === $this->id){
+						$return = $key + 1;
+						break;
+					}
+				}
 			}
 		}
 		return $return;
