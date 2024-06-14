@@ -19,15 +19,12 @@ switch ($type) {
 	case 'css':
 		header("Content-type: text/css; charset=utf-8");
 		$minifier = new Minify\CSS;
+		$default = DIR_CSS . 'global.css';
+		$files[] = $default;
 
 		switch ($file) {
-			default:
-				$default = DIR_CSS . 'global.css';
-				if(!file_exists($default)){
-					display404();
-				}else{
-					$files[] = $default;
-				}
+			case 'stats':
+				$files[] = DIR_CSS . 'stats.css';
 				break;
 		}
 

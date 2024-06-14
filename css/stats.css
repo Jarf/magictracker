@@ -1,0 +1,19 @@
+div#statscontainer{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
+}
+
+@media only screen and (max-width: 600px){
+	div#statscontainer > div.statsitem{
+		width: 100%;
+		margin-bottom: 16px;
+	}
+}
+
+div#statscontainer > div.statsitem{
+	flex-shrink: 0;
+	flex-grow: 1;
+	padding: 0 8px;
+}
