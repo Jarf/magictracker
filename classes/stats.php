@@ -494,6 +494,9 @@ class Stats{
 		}
 		$sql = 'SELECT kills.killedId, GROUP_CONCAT(kills.killerId) AS killer FROM kills JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY killedId';
 		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
 		$this->db->execute();
 		$result = $this->db->fetchAll();
 		$players = new Player();
@@ -519,8 +522,28 @@ class Stats{
 
 	private function getQuickestKill(){
 		$return = 'N/A';
-		$sql = 'SELECT kills.killerId, kills.killedId, TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) AS killTime FROM kills JOIN game ON kills.gameId = game.id ORDER BY TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) ASC LIMIT 1';
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'kills.gameId = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'kills.killedId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT kills.killerId, kills.killedId, TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) AS killTime FROM kills JOIN game ON kills.gameId = game.id ' . $where . ' ORDER BY TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) ASC LIMIT 1';
 		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
 			$result = $this->db->fetch();
