@@ -92,6 +92,7 @@ div#gamebuttons, div#otherbuttons{
 div#gamebuttons > button.gamebutton, div#otherbuttons > button.otherbutton{
 	flex-basis: 84px;
 	height: 110px;
+	cursor: pointer;
 }
 
 button#startnewgame{

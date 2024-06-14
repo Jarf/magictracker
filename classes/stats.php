@@ -454,9 +454,6 @@ class Stats{
 				sort($row);
 				$matches[] = implode(',',$row);
 			}
-			foreach($return as $row){
-				$matches[] = $row->playerids;
-			}
 			$matches = array_count_values($matches);
 			arsort($matches);
 			$matches = array_slice(array_keys($matches),0,1,true);
@@ -514,8 +511,43 @@ class Stats{
 	}
 
 	private function getGameStats(){
-		$return = array();
+		$return = array(
+			$this->getQuickestKill()
+		);
 		return $return;
+	}
+
+	private function getQuickestKill(){
+		$return = 'N/A';
+		$sql = 'SELECT kills.killerId, kills.killedId, TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) AS killTime FROM kills JOIN game ON kills.gameId = game.id ORDER BY TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) ASC LIMIT 1';
+		$this->db->query($sql);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetch();
+			$time = $this->convertSecondsToHumanReadable($result->killTime);
+			$players = new Player();
+			$players = $players->getPlayerIdNameMap();
+			if(isset($players[$result->killerId]) && isset($players[$result->killedId])){
+				$return = $players[$result->killerId] . ' killed ' . $players[$result->killedId] . ' in ' . $time;
+			}
+		}
+		return 'Quickest Kill: ' . $return;
+	}
+
+	private function convertSecondsToHumanReadable(int $seconds){
+		$return = array();
+		$secs = $seconds % 60;
+		$hrs = $seconds / 60;
+		$mins = $hrs % 60;
+		$hrs = floor($hrs / 60);
+		if($hrs > 0){
+			$return[] = $hrs . ' hour' . ($hrs > 1 ? 's' : '');
+		}
+		if($mins > 0){
+			$return[] = $mins . ' minute' . ($mins > 1 ? 's' : '');
+		}
+		$return[] = $secs . ' second' . ($secs > 1 ? 's' : '');
+		return implode(' ', $return);
 	}
 }
 ?>
