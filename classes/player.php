@@ -16,5 +16,14 @@ class Player{
 		}
 		return $return;
 	}
+
+	public function getPlayerIdNameMap(){
+		$players = $this->getPlayers();
+		$return = array();
+		foreach($players as $player){
+			$return[$player->id] = $player->name;
+		}
+		return $return;
+	}
 }
 ?>
