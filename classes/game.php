@@ -5,20 +5,32 @@ class Game{
 	public string $date;
 	private $db;
 
-	public function __construct(int $id = null){
+	public function __construct(int $id = null, int $seasonid = null){
 		$this->db = new DB();
-		$this->getGame($id);
+		$this->getGame($id, $seasonid);
 	}
 
-	private function getGame(int $id = null){
-		$where = '';
+	private function getGame(int $id = null, int $seasonid = null){
+		$where = $bind = array();
 		if(!empty($id)){
-			$where = 'WHERE game.id = :gameId ';
+			$where[] = 'game.id = :gameId ';
+			$bind['gameId'] = $id;
 		}
-		$sql = 'SELECT game.id, game.seasonId, game.date FROM game ' . $where . 'ORDER BY game.date DESC LIMIT 1';
+		if(!empty($seasonid)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $seasonid;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT game.id, game.seasonId, game.date FROM game ' . $where . ' ORDER BY game.date DESC LIMIT 1';
 		$this->db->query($sql);
-		if(!empty($id)){
-			$this->db->bind('gameId', $id);
+		if(!empty($bind)){
+			foreach($bind as $key => $val){
+				$this->db->bind($key, $val);
+			}
 		}
 		$this->db->execute();
 		$return = false;
@@ -29,6 +41,8 @@ class Game{
 					$this->$key = $val;
 				}
 			}
+		}else{
+			unset($this->id, $this->seasonId, $this->date);
 		}
 		return $return;
 	}

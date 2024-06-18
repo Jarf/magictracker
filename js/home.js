@@ -32,7 +32,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.send();
 			}
 		});
-	}
+	}else if(document.getElementById('startnewseason') !== null){
+		document.getElementById('startnewseason').addEventListener('click', function(){
+			clearModal();
+			populateModal('newseason');
+			toggleModal();
+		});
+	};
 	document.getElementById('quotebox').addEventListener('click', function(){
 		clearModal();
 		populateModal('quote');
@@ -165,6 +171,18 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					location.assign('/');
 				}
 				xhttp.open('GET', '/ajax/season.php?do=saveSeasonDates&season=' + seasonid + '&startdate=' + startdate + '&enddate=' + enddate, true);
+				xhttp.send();
+				break;
+
+			case 'createnewseason':
+				var startdate = document.getElementById('startdate').value;
+				var enddate = document.getElementById('enddate').value;
+				var seasonname = document.getElementById('seasonname').value;
+				xhttp.onload = function(){
+					location.assign('/');
+				}
+				xhttp.open('GET', '/ajax/season.php?do=createNewSeason&startdate=' + startdate + '&enddate=' + enddate + '&name=' + encodeURIComponent(seasonname));
+				clearModal();
 				xhttp.send();
 				break;
 		}

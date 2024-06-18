@@ -28,7 +28,7 @@
 		{{gamedate}}<br/>
 		{% endif %}
 	</div>
-	<div class="row" id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
+	<div class="row {{game.id is empty ? 'hidden' : ''}}" id="gamebuttons">
 		<button class="gamebutton" id="gameaddconcede">
 			<img alt="Breaking News" src="/img/breaking.svg"/><br/>
 			Concedes

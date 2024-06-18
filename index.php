@@ -54,6 +54,9 @@ $twig = new \Twig\Environment($loader, array(
 	'cache' => false,
 	'debug' => ISDEV
 ));
+if(ISDEV){
+	$twig->addExtension(new \Twig\Extension\DebugExtension());
+}
 $output = array();
 $output[] = $twig->render('header.twig', $pagevars);
 if(file_exists($tplpage)){
