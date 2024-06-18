@@ -15,12 +15,13 @@ if(isset($pagevars['season']->endDate)){
 }
 if(!empty($pagevars['season']->endDate)){
 	$pagevars['countdown'] = floor((strtotime($pagevars['season']->endDate) - time()) / 86400);
+	$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $pagevars['season']->endDate);
 	if($pagevars['countdown'] <= 2){
-		$endDate = DateTime::createFromFormat('Y-m-d H:i:s', $pagevars['season']->endDate);
 		$pagevars['countdown'] = convertSecondsToHumanReadable($endDate->getTimestamp() - time()) . ' remain';
 	}else{
 		$pagevars['countdown'] = $pagevars['countdown'] . ' days remain';
 	}
+	$pagevars['countdown'] = 'Ends ' . $endDate->format('jS F, Y') . ' - ' . $pagevars['countdown'];
 }else{
 	$pagevars['countdown'] = 'N/A';
 }
