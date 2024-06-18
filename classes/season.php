@@ -36,6 +36,17 @@ class Season{
 		if($this->db->rowCount() > 0){
 			$return = $this->db->fetch();
 			foreach($return as $key => $val){
+				if(!empty($val)){
+					switch ($key) {
+						case 'startDate':
+							$val = $val . ' 00:00:00';
+							break;
+						
+						case 'endDate':
+							$val = $val . ' 23:59:59';
+							break;
+					}
+				}
 				$this->$key = $val;
 			}
 		}
