@@ -12,19 +12,25 @@ class Season{
 	}
 
 	private function getSeason(int $id = null, int $gameid = null){
-		$bind = array();
+		$bind = $where = array();
 		if(!empty($id)){
-			$where = 'season.id = :seasonId';
+			$where[] = 'season.id = :seasonId';
 			$bind['seasonId'] = $id;
 		}
 		if(!empty($gameid)){
-			$where = 'game.id = :gameId';
+			$where[] = 'game.id = :gameId';
 			$bind['gameId'] = $gameid;
 		}
 		if(empty($id) && empty($gameid)){
-			$where = 'season.startDate <= NOW() AND season.endDate >= NOW()';
+			$where[] = 'season.startDate <= :startDate';
+			$where[] = 'season.endDate >= :endDate';
+			$bind['startDate'] = date('Y-m-d') . ' 00:00:00';
+			$bind['endDate'] = date('Y-m-d') . ' 23:59:59';
 		}
-		$sql = 'SELECT season.id, season.name, season.startDate, season.endDate FROM season LEFT JOIN game ON season.id = game.seasonId WHERE ' . $where . ' LIMIT 1';
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}
+		$sql = 'SELECT season.id, season.name, season.startDate, season.endDate FROM season LEFT JOIN game ON season.id = game.seasonId ' . $where . ' LIMIT 1';
 		$this->db->query($sql);
 		if(!empty($bind)){
 			foreach($bind as $key => $val){
@@ -36,17 +42,6 @@ class Season{
 		if($this->db->rowCount() > 0){
 			$return = $this->db->fetch();
 			foreach($return as $key => $val){
-				if(!empty($val)){
-					switch ($key) {
-						case 'startDate':
-							$val = $val . ' 00:00:00';
-							break;
-						
-						case 'endDate':
-							$val = $val . ' 23:59:59';
-							break;
-					}
-				}
 				$this->$key = $val;
 			}
 		}
@@ -83,6 +78,39 @@ class Season{
 		}
 		$return = array_reverse($return);
 		return $return;
+	}
+
+	public function getLatestSeason(){
+		$sql = 'SELECT season.id FROM season ORDER BY season.id DESC LIMIT 1';
+		$this->db->query($sql);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetch();
+			$this->getSeason($return->id);
+		}
+	}
+
+	public function updateDates(string $startDate, string $endDate){
+		$update = $bind = array();
+		if(isset($this->id) && !empty($this->id)){
+			$bind['seasonId'] = $this->id;
+			foreach(array('startDate', 'endDate') as $datetype){
+				$$datetype .= ($datetype === 'startDate') ? ' 00:00:00' : ' 23:59:59';
+				if($$datetype !== $this->$datetype){
+					$update[] = $datetype . '= :' . $datetype;
+					$bind[$datetype] = $$datetype;
+					$this->$datetype = $$datetype;
+				}
+			}
+			if(!empty($update)){
+				$sql = 'UPDATE season SET ' . implode(', ', $update) . ' WHERE season.id = :seasonId';
+				$this->db->query($sql);
+				foreach($bind as $key => $val){
+					$this->db->bind($key, $val);
+				}
+				$this->db->execute();
+			}
+		}
 	}
 }
 ?>
