@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	const modal = document.getElementById('modalcontainer');
 	const modalcontent = document.getElementById('modalcontent');
 	const gameid = document.getElementById('gameid').value;
+	const seasonid = document.getElementById('seasonid').value;
 	const seasonrankings = document.getElementById('seasonscores');
 
 	document.getElementById('gameaddkill').addEventListener('click', function(){
@@ -20,16 +21,18 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('concedes');
 		toggleModal();
 	});
-	document.getElementById('startnewgame').addEventListener('click', function(){
-		if(confirm('Are you sure?')){
-			const xhttp = new XMLHttpRequest();
-			xhttp.onload = function(){
-				location.assign('/');
+	if(document.getElementById('startnewgame') !== null){
+		document.getElementById('startnewgame').addEventListener('click', function(){
+			if(confirm('Are you sure?')){
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function(){
+					location.assign('/');
+				}
+				xhttp.open('GET', '/ajax/game.php?do=startNewGame');
+				xhttp.send();
 			}
-			xhttp.open('GET', '/ajax/game.php?do=startNewGame');
-			xhttp.send();
-		}
-	});
+		});
+	}
 	document.getElementById('quotebox').addEventListener('click', function(){
 		clearModal();
 		populateModal('quote');
@@ -40,6 +43,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('games');
 		toggleModal();
 	});
+	var seasoncountdowns = document.querySelectorAll('div.row.seasoncountdown');
+	for (let i = 0; i < seasoncountdowns.length; i++){
+		seasoncountdowns[i].addEventListener('click', function(){
+			clearModal();
+			populateModal('seasondate');
+			toggleModal();
+		});
+	}
 
 	// Dynamic listeners
 	document.addEventListener('click', function(e){
@@ -47,7 +58,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		var timestamp = Date.now();
 		const xhttp = new XMLHttpRequest();
 		if(button === undefined || button.length === 0){
-			button = e.target.className;
+			if(e.target.className !== undefined && e.target.className !== ''){
+				button = e.target.className;
+			}else{
+				button = e.target.closest('.row').id;
+			}
 		}
 		console.log(button);
 		switch (button){
@@ -142,6 +157,16 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				xhttp.open('GET', '/ajax/quote.php?' + getargs, true);
 				xhttp.send();
 				break;
+
+			case 'saveseasondates':
+				var startdate = document.getElementById('startdate').value;
+				var enddate = document.getElementById('enddate').value;
+				xhttp.onload = function(){
+					location.assign('/');
+				}
+				xhttp.open('GET', '/ajax/season.php?do=saveSeasonDates&season=' + seasonid + '&startdate=' + startdate + '&enddate=' + enddate, true);
+				xhttp.send();
+				break;
 		}
 	});
 
@@ -155,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		xhttp.onload = function(){
 			modalcontent.innerHTML = this.responseText;
 		}
-		xhttp.open('GET', '/ajax/modalData.php?type=' + type + '&game=' + gameid + '&_=' + timestamp, true);
+		xhttp.open('GET', '/ajax/modalData.php?type=' + type + '&game=' + gameid + '&season=' + seasonid + '&_=' + timestamp, true);
 		xhttp.send();
 	}
 

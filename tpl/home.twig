@@ -1,54 +1,68 @@
+<input type="hidden" id="gameid" value="{{game.id}}"/>
+<input type="hidden" id="seasonid" value="{{season.id}}"/>
 <div class="row">
 	<h1>Milkshakes El Gargling</h1>
 </div>
-<div class="row">
-	<h2>{{season.name}}</h2>
-	{{countdown}}
-</div>
-<div class="row" id="seasonscores">
-	<h3>Scores</h3>
-	{% for score in scores %}
-		{{score.name}} - {{score.seasonPoints}}<br/>
-	{% endfor %}
-</div>
 <hr/>
-<div id="quotebox" class="row">
-	{{quote|raw}}
+<div class="{{seasonexpired == true ? 'hidden' : ''}}">
+	<div class="row seasoncountdown">
+		<h2>{{season.name}}</h2>
+		{{countdown}}
+	</div>
+	<div class="row" id="seasonscores">
+		<h3>Scores</h3>
+		{% for score in scores %}
+			{{score.name}} - {{score.seasonPoints}}<br/>
+		{% endfor %}
+	</div>
+	<hr/>
+	<div id="quotebox" class="row">
+		{{quote|raw}}
+	</div>
+	<hr/>
+	<div class="row" id="gamedisplay">
+		{% if game.id is empty %}
+		<h3>No Game Found</h3>
+		{% else %}
+		<h3>Game {{gamecount}}</h3>
+		{{gamedate}}<br/>
+		{% endif %}
+	</div>
+	<div class="row" id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
+		<button class="gamebutton" id="gameaddconcede">
+			<img alt="Breaking News" src="/img/breaking.svg"/><br/>
+			Concedes
+		</button>
+		<button class="gamebutton" id="gameaddkill">
+			<img alt="Skull" src="/img/swamp.svg"/><br/>
+			Kills
+		</button>
+		<button class="gamebutton" id="gameaddpoints">
+			<img alt="Scales" src="/img/judgement.svg"/><br/>
+			Points
+		</button>
+	</div>
+	<hr/>
 </div>
-<hr/>
-<div class="row" id="gamedisplay">
-	<input type="hidden" id="gameid" value="{{game.id}}"/>
-	{% if game.id is empty %}
-	<h3>No Game Found</h3>
-	{% else %}
-	<h3>Game {{gamecount}}</h3>
-	{{gamedate}}<br/>
-	{% endif %}
+<div class="{{seasonexpired == false ? 'hidden' : ''}}">
+	<div class="row seasoncountdown">
+		<h2>{{season.name}} is over!</h2>
+		<hr/>
+		{{scores.name}} wins with {{scores.seasonPoints}} points<br/>
+		<hr/>
+		<h3>Fuck you {{scores.name}}, you probably cheated anyway</h3>
+		<hr/>
+	</div>
 </div>
-<div class="row" id="gamebuttons" {{game.id is empty ? 'class="hidden"' : ''}}>
-	<button class="gamebutton" id="gameaddconcede">
-		<img alt="Breaking News" src="/img/breaking.svg"/><br/>
-		Concedes
-	</button>
-	<button class="gamebutton" id="gameaddkill">
-		<img alt="Skull" src="/img/swamp.svg"/><br/>
-		Kills
-	</button>
-	<button class="gamebutton" id="gameaddpoints">
-		<img alt="Scales" src="/img/judgement.svg"/><br/>
-		Points
-	</button>
-</div>
-<hr/>
 <div class="row" id="otherbuttons">
 	<button class="otherbutton" id="playerstats">
-		<a href="/stats">
+		<a href="/stats/{{season.id}}">
 			<img alt="Jumpstart" src="/img/weatherlight.svg"/>
 			Stats
 		</a>
 	</button>
-	<button class="otherbutton" id="startnewgame">
+	<button class="otherbutton" id="{{seasonexpired == false ? 'startnewgame' : 'startnewseason'}}">
 		<img alt="Desparked" src="/img/desparked.svg"/>
-		New Game
+		New {{seasonexpired == false ? 'Game' : 'Season'}}
 	</button>
 </div>

@@ -14,6 +14,7 @@ if(isset($_GET) && isset($_GET['do'])){
 			display404();
 			break;
 	}
+	exit();
 }
 display404();
 ?>

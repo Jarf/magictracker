@@ -23,3 +23,6 @@ ALTER TABLE `quotes` ADD CONSTRAINT `quotes_to_player` FOREIGN KEY (`playerId`) 
 
 -- Add timestamp to kills table
 ALTER TABLE `kills` ADD `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `killedId`;
+
+-- Add time to season start/end
+ALTER TABLE `season` CHANGE `startDate` `startDate` DATETIME NULL DEFAULT NULL, CHANGE `endDate` `endDate` DATETIME NULL DEFAULT NULL;

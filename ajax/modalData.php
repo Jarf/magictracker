@@ -5,9 +5,12 @@ require_once(dirname(__DIR__) . '/include/autoload.php');
 $type = null;
 if(isset($_GET) && isset($_GET['type'])){
 	$type = $_GET['type'];
-	$gameid = null;
+	$gameid = $seasonid = null;
 	if(isset($_GET['game']) && is_numeric($_GET['game'])){
 		$gameid = intval($_GET['game']);
+	}
+	if(isset($_GET['season']) && is_numeric($_GET['season'])){
+		$seasonid = intval($_GET['season']);
 	}
 	switch ($type) {
 		case 'kills':
@@ -103,7 +106,7 @@ if(isset($_GET) && isset($_GET['type'])){
 			break;
 
 		case 'seasonranking':
-			$season = new Season();
+			$season = new Season($seasonid);
 			$ranking = $season->getSeasonRanking();
 			ob_start();
 			?>
@@ -141,7 +144,7 @@ if(isset($_GET) && isset($_GET['type'])){
 			break;
 
 		case 'games':
-			$season = new Season(null, $gameid);
+			$season = new Season($seasonid, $gameid);
 			$games = $season->getSeasonGames();
 			ob_start();
 			?>
@@ -154,6 +157,26 @@ if(isset($_GET) && isset($_GET['type'])){
 					<li><a href="/<?=$game->id?>"><?=$game->name?> - <?=$game->date?></a></li>
 				<?php endforeach; ?>
 			</ul>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
+
+		case 'seasondate':
+			$season = new Season($seasonid);
+			ob_start();
+			?>
+			<h1><?=$season->name?></h1>
+			<h3>Start/End Dates</h3>
+			<hr/>
+			<label for="startdate">Start:</label>
+			<input id="startdate" name="startdate" type="date" disabled readonly value="<?=substr($season->startDate,0,10)?>"/><br/>
+			<label for="enddate">End:</label>
+			<input id="enddate" name="enddate" type="date" min="<?=date('Y-m-d')?>" value="<?=substr($season->endDate,0,10)?>"/>
+			<hr/>
+			<button id="saveseasondates">Save Dates</button>
 			<hr/>
 			<button id="closemodal">Close</button>
 			<?php
