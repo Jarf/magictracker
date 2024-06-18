@@ -547,7 +547,7 @@ class Stats{
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
 			$result = $this->db->fetch();
-			$time = $this->convertSecondsToHumanReadable($result->killTime);
+			$time = convertSecondsToHumanReadable($result->killTime);
 			$players = new Player();
 			$players = $players->getPlayerIdNameMap();
 			if(isset($players[$result->killerId]) && isset($players[$result->killedId])){
@@ -555,22 +555,6 @@ class Stats{
 			}
 		}
 		return 'Quickest Kill: ' . $return;
-	}
-
-	private function convertSecondsToHumanReadable(int $seconds){
-		$return = array();
-		$secs = $seconds % 60;
-		$hrs = $seconds / 60;
-		$mins = $hrs % 60;
-		$hrs = floor($hrs / 60);
-		if($hrs > 0){
-			$return[] = $hrs . ' hour' . ($hrs > 1 ? 's' : '');
-		}
-		if($mins > 0){
-			$return[] = $mins . ' minute' . ($mins > 1 ? 's' : '');
-		}
-		$return[] = $secs . ' second' . ($secs > 1 ? 's' : '');
-		return implode(' ', $return);
 	}
 }
 ?>
