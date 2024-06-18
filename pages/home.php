@@ -2,9 +2,15 @@
 $pagevars['quote'] = new Quote;
 $pagevars['quote'] = $pagevars['quote']->getRandomQuote();
 $pagevars['seasonexpired'] = false;
-$pagevars['season'] = new Season(null, $gameid);
-if(empty($pagevars['season']->id)){
+$pagevars['season'] = new Season($seasonid, $gameid);
+if(!isset($pagevars['season']->id)){
 	$pagevars['season']->getLatestSeason();
+}
+if(isset($pagevars['season']->endDate)){
+	if(date('Y-m-d H:i:s') > $pagevars['season']->endDate){
+		$pagevars['seasonexpired'] = true;
+	}
+}else{
 	$pagevars['seasonexpired'] = true;
 }
 if(!empty($pagevars['season']->endDate)){
@@ -18,13 +24,14 @@ if(!empty($pagevars['season']->endDate)){
 }else{
 	$pagevars['countdown'] = 'N/A';
 }
+
 $pagevars['scores'] = $pagevars['season']->getSeasonRanking();
 
 if($pagevars['seasonexpired'] === false){
-	$pagevars['game'] = new Game($gameid);
+	$pagevars['game'] = new Game($gameid, $pagevars['season']->id);
 	$pagevars['gamedate'] = $pagevars['game']->printDate();
 	$pagevars['gamecount'] = $pagevars['game']->getGameNumber();
-}else{
+}elseif(!empty($pagevars['scores'])){
 	$pagevars['scores'] = current($pagevars['scores']);
 }
 ?>

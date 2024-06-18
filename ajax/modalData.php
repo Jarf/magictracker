@@ -183,6 +183,32 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'newseason':
+			$season = new Season($seasonid);
+			$enddate = DateTime::createFromFormat('Y-m-d H:i:s', $season->endDate);
+			$mindate = date('Y-m-d',strtotime(date('Y-m-d', strtotime($season->endDate)) . ' 00:00:00 +1 day'));
+			$today = date('Y-m-d');
+			$estimateddates = $season->calculateNextEndDate();
+			ob_start();
+			?>
+			<h1>New Season</h1>
+			Last season ended on <?=date('jS F, Y', $enddate->getTimestamp())?><br/>
+			<hr/>
+			<label for="seasonname">Name:</label>
+			<input id="seasonname" type="text" value="<?=$estimateddates['name']?>"/><br/>
+			<label for="startdate">Start:</label>
+			<input id="startdate" name="startdate" type="date" min="<?=$mindate?>" value="<?=$today?>"/><br/>
+			<label for="enddate">End:</label>
+			<input id="enddate" name="enddate" type="date" min="<?=$today?>" value="<?=$estimateddates['end']?>"/>
+			<hr/>
+			<button id="createnewseason">Create New Season</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();

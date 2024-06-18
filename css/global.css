@@ -150,8 +150,11 @@ select{
 	width: calc(100% - 16px);
 }
 
-input#quotedate, textarea#quoteinput, select{
+input, textarea, select{
 	font-family: inherit;
+}
+
+input#quotedate, textarea#quoteinput, select{
 	width: calc(100% - 16px);
 }
 
