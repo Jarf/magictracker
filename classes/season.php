@@ -11,6 +11,17 @@ class Season{
 		$this->getSeason($id, $gameid);
 	}
 
+	public function getAllSeasons(){
+		$return = array();
+		$sql = 'SELECT season.id, season.name, season.startDate, season.endDate FROM season ORDER BY season.id DESC';
+		$this->db->query($sql);
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetchAll();
+		}
+		return $return;
+	}
+
 	public function createNewSeason(string $startDate, string $endDate, string $name){
 		$startDate .= ' 00:00:00';
 		$endDate .= ' 23:59:59';

@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				button = e.target.closest('.row').id;
 			}
 		}
-		console.log(button);
+		// console.log(button);
 		switch (button){
 			case 'closemodal':
 				toggleModal();
