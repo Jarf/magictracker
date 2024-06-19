@@ -22,7 +22,7 @@ Header set X-XSS-Protection "1; mode=block"
 <Else>
 	Header always edit Set-Cookie (.*) $1;HttpOnly;SameSite=strict;Secure;Domain=magic.jarfjam.co.uk;Path=/;
 </Else>
-Header set Permissions-Policy "geolocation=(), camera=(), microphone=(), display-capture=(), web-share=()"
+Header set Permissions-Policy "geolocation=(), camera=(), microphone=(), display-capture=()"
 Header set Content-Security-Policy "default-src 'self'; img-src 'self'; style-src 'self'; base-uri 'self'; object-src 'none'"
 Header append Vary Accept env=REQUEST_image
 
