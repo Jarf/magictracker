@@ -515,7 +515,8 @@ class Stats{
 
 	private function getGameStats(){
 		$return = array(
-			$this->getQuickestKill()
+			$this->getQuickestKill(),
+			$this->getNumberOfIncompleteGames()
 		);
 		return $return;
 	}
@@ -555,6 +556,47 @@ class Stats{
 			}
 		}
 		return 'Quickest Kill: ' . $return;
+	}
+
+	private function getNumberOfIncompleteGames(){
+		$where = $bind = array();
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+
+		$total = $incomplete = 0;
+		$sql = 'SELECT COUNT(game.id) AS games, IF(points.points IS NULL, 0, 1) AS complete FROM game LEFT JOIN points ON game.id = points.gameId ' . $where . ' GROUP BY IF(points.points IS NULL, 0, 1)';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetchAll();
+			foreach($result as $row){
+				if($row->complete === 0){
+					$incomplete = $row->games;
+				}else{
+					$total = $row->games;
+				}
+			}
+		}
+		return 'No Point Games: ' . $incomplete . ' out of ' . $total;
+		
 	}
 }
 ?>
