@@ -585,13 +585,13 @@ class Stats{
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
+		$total = $incomplete = 0;
 		if($this->db->rowCount() > 0){
 			$result = $this->db->fetchAll();
 			foreach($result as $row){
+				$total++;
 				if($row->complete === 0){
-					$incomplete = $row->games;
-				}else{
-					$total = $row->games;
+					$incomplete++;
 				}
 			}
 		}
