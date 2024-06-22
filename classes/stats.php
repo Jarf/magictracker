@@ -503,9 +503,9 @@ class Stats{
 		$players = $players->getPlayerIdNameMap();
 		foreach($result as $row){
 			$killer = explode(',', $row->killer);
-			$killer = array_count_values($killer);
-			arsort($killer);
-			$killer = current($killer);
+			$values = array_count_values($killer);
+			arsort($values);
+			$killer = array_key_first($values);
 			if(isset($players[$killer]) && isset($players[$row->killedId])){
 				$return[] = $players[$row->killedId] . ' always dies to ' . $players[$killer];
 			}
