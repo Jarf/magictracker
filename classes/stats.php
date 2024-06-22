@@ -300,7 +300,7 @@ class Stats{
 		}
 		usort($kdratios, function($a ,$b){
 			if($a['kd'] === $b['kd']){
-				return 0;
+				return ($a['kills'] < $b['kills']) ? 1 : -1;
 			}else{
 				return ($a['kd'] > $b['kd']) ? -1 : 1;
 			}
