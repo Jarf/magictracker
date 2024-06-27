@@ -63,7 +63,7 @@ RewriteRule .* /index.php
 
 <IfModule mod_expires.c>
 	ExpiresActive on
-	ExpiresDefault "access plus 3 months"
+	ExpiresDefault "access"
 	ExpiresByType image/jpg "access plus 1 year"
 	ExpiresByType image/jpeg "access plus 1 year"
 	ExpiresByType image/png "access plus 1 year"
