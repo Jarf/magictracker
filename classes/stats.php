@@ -33,6 +33,7 @@ class Stats{
 		$return = array(
 			$this->getMostKills(),
 			$this->getMostDeaths(),
+			$this->getMostSuicides(),
 			$this->getMostConcedes(),
 			$this->getMostWins(),
 			$this->getMostRunnerUps(),
@@ -110,6 +111,41 @@ class Stats{
 			$return = $result->name . ' with ' . $result->deaths . ' deaths';
 		}
 		$return = 'Most Deaths: '  . $return;
+		return $return;
+	}
+
+	private function getMostSuicides(){
+		$return = 'N/A';
+		$where = $bind = array();
+		$where[] = 'kills.killedId = kills.killerId';
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'kills.killerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT player.name, COUNT(kills.gameId) AS suicides FROM player JOIN kills ON player.id = kills.killedId JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC LIMIT 1';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetch();
+			$return = $result->name . ' with ' . $result->suicides . ' suicides';
+		}
+		$return = 'Most Suicides: '  . $return;
 		return $return;
 	}
 
