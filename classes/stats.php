@@ -66,15 +66,28 @@ class Stats{
 			$bind['playerId'] = $this->playerId;
 		}
 		$where = implode(' AND ', $where);
-		$sql = 'SELECT player.name, COUNT(kills.gameId) AS kills FROM player JOIN kills ON player.id = kills.killerId JOIN game ON kills.gameId = game.id WHERE ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(kills.gameId) AS kills FROM player JOIN kills ON player.id = kills.killerId JOIN game ON kills.gameId = game.id WHERE ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->kills . ' kills';
+			$results = $this->db->fetchAll();
+			$names = array();
+			$mostkills = null;
+			foreach($results as $result){
+				$kills = intval($result->kills);
+				if(empty($mostkills)){
+					$mostkills = $kills;
+				}
+				if($kills === $mostkills){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostkills . ' kills';
 		}
 		$return = 'Most Kills: '  . $return;
 		return $return;
@@ -100,15 +113,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, COUNT(kills.gameId) AS deaths FROM player JOIN kills ON player.id = kills.killedId JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(kills.gameId) AS deaths FROM player JOIN kills ON player.id = kills.killedId JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->deaths . ' deaths';
+			$mostdeaths = null;
+			$names = array();
+			$results = $this->db->fetchAll();
+			foreach($results as $result){
+				$deaths = intval($result->deaths);
+				if(empty($mostdeaths)){
+					$mostdeaths = $deaths;
+				}
+				if($deaths === $mostdeaths){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostdeaths . ' deaths';
 		}
 		$return = 'Most Deaths: '  . $return;
 		return $return;
@@ -135,15 +161,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, COUNT(kills.gameId) AS suicides FROM player JOIN kills ON player.id = kills.killedId JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(kills.gameId) AS suicides FROM player JOIN kills ON player.id = kills.killedId JOIN game ON kills.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY COUNT(kills.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->suicides . ' suicides';
+			$results = $this->db->fetchAll();
+			$mostsuicides = null;
+			$names = array();
+			foreach($results as $result){
+				$suicides = intval($result->suicides);
+				if(empty($mostsuicides)){
+					$mostsuicides = $suicides;
+				}
+				if($suicides === $mostsuicides){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostsuicides . ' suicides';
 		}
 		$return = 'Most Suicides: '  . $return;
 		return $return;
@@ -169,15 +208,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, COUNT(concede.gameId) AS concedes FROM concede JOIN player ON concede.playerId = player.id JOIN game ON concede.gameId = game.id ' . $where . ' GROUP BY concede.playerId ORDER BY COUNT(concede.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(concede.gameId) AS concedes FROM concede JOIN player ON concede.playerId = player.id JOIN game ON concede.gameId = game.id ' . $where . ' GROUP BY concede.playerId ORDER BY COUNT(concede.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->concedes . ' concedes';
+			$results = $this->db->fetchAll();
+			$mostconcedes = null;
+			$names = array();
+			foreach($results as $result){
+				$concedes = intval($result->concedes);
+				if(empty($mostconcedes)){
+					$mostconcedes = $concedes;
+				}
+				if($concedes === $mostconcedes){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostconcedes . ' concedes';
 		}
 		$return = 'Most Concedes: '  . $return;
 		return $return;
@@ -204,15 +256,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, COUNT(points.gameId) AS wins FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY COUNT(points.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(points.gameId) AS wins FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY COUNT(points.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->wins . ' wins';
+			$results = $this->db->fetchAll();
+			$mostwins = null;
+			$names = array();
+			foreach($results as $result){
+				$wins = intval($result->wins);
+				if(empty($mostwins)){
+					$mostwins = $wins;
+				}
+				if($wins === $mostwins){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostwins . ' wins';
 		}
 		$return = 'Most Wins: '  . $return;
 		return $return;
@@ -239,15 +304,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, COUNT(points.gameId) AS runnerups FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY COUNT(points.gameId) DESC LIMIT 1';
+		$sql = 'SELECT player.name, COUNT(points.gameId) AS runnerups FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY COUNT(points.gameId) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->runnerups . ' runner ups';
+			$results = $this->db->fetchAll();
+			$mostrunnerups = null;
+			$names = array();
+			foreach($results as $result){
+				$runnerups = intval($result->runnerups);
+				if(empty($mostrunnerups)){
+					$mostrunnerups = $runnerups;
+				}
+				if($runnerups === $mostrunnerups){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostrunnerups . ' runner ups';
 		}
 		$return = 'Most Runner Ups: '  . $return;
 		return $return;
@@ -273,15 +351,28 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT player.name, SUM(points.points) AS points FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY SUM(points.points) DESC LIMIT 1';
+		$sql = 'SELECT player.name, SUM(points.points) AS points FROM points JOIN player ON points.playerId = player.id JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY points.playerId ORDER BY SUM(points.points) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
 		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
-			$result = $this->db->fetch();
-			$return = $result->name . ' with ' . $result->points . ' points';
+			$mostpoints = null;
+			$names = array();
+			$results = $this->db->fetchAll();
+			foreach($results as $result){
+				$points = intval($result->points);
+				if(empty($mostpoints)){
+					$mostpoints = $points;
+				}
+				if($points === $mostpoints){
+					$names[] = $result->name;
+				}else{
+					break;
+				}
+			}
+			$return = implode(', ', $names) . ' with ' . $mostpoints . ' points';
 		}
 		$return = 'Most Points: '  . $return;
 		return $return;
