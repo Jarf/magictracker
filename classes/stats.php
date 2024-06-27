@@ -615,7 +615,7 @@ class Stats{
 		}
 
 		$total = $incomplete = 0;
-		$sql = 'SELECT COUNT(game.id) AS games, IF(points.points IS NULL, 0, 1) AS complete FROM game LEFT JOIN points ON game.id = points.gameId ' . $where . ' GROUP BY IF(points.points IS NULL, 0, 1)';
+		$sql = 'SELECT game.id, IF(points.points IS NULL, 0, 1) AS complete FROM game LEFT JOIN points ON game.id = points.gameId ' . $where . ' GROUP BY game.id, IF(points.points IS NULL, 0, 1)';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
