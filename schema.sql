@@ -26,3 +26,16 @@ ALTER TABLE `kills` ADD `timestamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP 
 
 -- Add time to season start/end
 ALTER TABLE `season` CHANGE `startDate` `startDate` DATETIME NULL DEFAULT NULL, CHANGE `endDate` `endDate` DATETIME NULL DEFAULT NULL;
+
+-- Add archidekt names
+ALTER TABLE `player` ADD `archidektName` VARCHAR(255) NULL AFTER `name`;
+UPDATE `player` SET `archidektName` = 'Jarf' WHERE `player`.`id` = 1;
+UPDATE `player` SET `archidektName` = 'SevenHellsNed' WHERE `player`.`id` = 2;
+UPDATE `player` SET `archidektName` = 'TabulaRasa1' WHERE `player`.`id` = 3;
+UPDATE `player` SET `archidektName` = 'SyrConrad' WHERE `player`.`id` = 4;
+UPDATE `player` SET `archidektName` = 'DodgyJack' WHERE `player`.`id` = 6;
+
+-- Add archidekt decks table
+CREATE TABLE `magic`.`decks` ( `playerId` BIGINT UNSIGNED NOT NULL , `deckId` BIGINT UNSIGNED NOT NULL , `name` VARCHAR(255) NOT NULL , `colors` VARCHAR(5) NULL ) ENGINE = InnoDB;
+ALTER TABLE `decks` ADD CONSTRAINT `decks_to_player` FOREIGN KEY (`playerId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `magic`.`decks` ADD UNIQUE `playerDeckUniqueIdx` (`playerId`, `deckId`);
