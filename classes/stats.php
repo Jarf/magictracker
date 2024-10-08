@@ -662,6 +662,7 @@ class Stats{
 			$where[] = 'kills.killedId = :playerId';
 			$bind['playerId'] = $this->playerId;
 		}
+		$where[] = 'TIMESTAMPDIFF(SECOND, game.date, kills.timestamp) > 360';
 		if(!empty($where)){
 			$where = 'WHERE ' . implode(' AND ', $where);
 		}else{
