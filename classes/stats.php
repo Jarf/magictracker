@@ -24,7 +24,8 @@ class Stats{
 			'Kill Death Ratios' => $this->getKDRatios(),
 			'Dynamic Duos' => $this->getDuoStats(),
 			'Most Killed By' => $this->getKilledBy(),
-			'Game Stats' => $this->getGameStats()
+			'Game Stats' => $this->getGameStats(),
+			'Points' => $this->getPointsScored()
 		);
 		return $return;
 	}
@@ -725,6 +726,41 @@ class Stats{
 		}
 		return 'No Point Games: ' . $incomplete . ' out of ' . $total;
 		
+	}
+
+	private function getPointsScored(){
+		$where = $bind = array();
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT player.id, player.name, IFNULL(SUM(points.points), 0) AS points FROM player LEFT JOIN points ON player.id = points.playerId LEFT JOIN game ON points.gameId = game.id ' . $where . ' GROUP BY player.id ORDER BY SUM(points.points) DESC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		$return = array();
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetchAll();
+			foreach($result as $row){
+				$return[] = $row->name . ' - ' . $row->points;
+			}
+		}
+		return $return;
 	}
 }
 ?>
