@@ -49,6 +49,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('games');
 		toggleModal();
 	});
+	document.getElementById('winbin').addEventListener('click', function(){
+		clearModal();
+		populateModal('winbin');
+		toggleModal();
+	});
 	var seasoncountdowns = document.querySelectorAll('div.row.seasoncountdown');
 	for (let i = 0; i < seasoncountdowns.length; i++){
 		seasoncountdowns[i].addEventListener('click', function(){
@@ -183,6 +188,22 @@ document.addEventListener('DOMContentLoaded', function(event) {
 				}
 				xhttp.open('GET', '/ajax/season.php?do=createNewSeason&startdate=' + startdate + '&enddate=' + enddate + '&name=' + encodeURIComponent(seasonname));
 				clearModal();
+				xhttp.send();
+				break;
+
+			case 'savewinbin':
+				var params = new Object();
+				var winbininputs = document.querySelectorAll('select.winbinselect');
+				var getargs = '';
+				for (let i = 0; i < winbininputs.length; i++){
+					var playerid = winbininputs[i].dataset.player;
+					getargs += '&winbin[' + playerid + ']=' + winbininputs[i].value;
+				}
+				getargs = getargs.substring(1)
+				xhttp.onload = function(){
+					toggleModal();
+				}
+				xhttp.open('GET', '/ajax/winbin.php?' + getargs, true);
 				xhttp.send();
 				break;
 		}

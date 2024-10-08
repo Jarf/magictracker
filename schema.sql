@@ -39,3 +39,8 @@ UPDATE `player` SET `archidektName` = 'DodgyJack' WHERE `player`.`id` = 6;
 CREATE TABLE `magic`.`decks` ( `playerId` BIGINT UNSIGNED NOT NULL , `deckId` BIGINT UNSIGNED NOT NULL , `name` VARCHAR(255) NOT NULL , `colors` VARCHAR(5) NULL ) ENGINE = InnoDB;
 ALTER TABLE `decks` ADD CONSTRAINT `decks_to_player` FOREIGN KEY (`playerId`) REFERENCES `player`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `magic`.`decks` ADD UNIQUE `playerDeckUniqueIdx` (`playerId`, `deckId`);
+ALTER TABLE `decks` ADD INDEX(`deckId`);
+
+-- Winbin
+ALTER TABLE `player` ADD `winbin` BIGINT UNSIGNED NULL AFTER `archidektName`;
+ALTER TABLE `player` ADD CONSTRAINT `playerwinbin_to_deckid` FOREIGN KEY (`winbin`) REFERENCES `decks`(`deckId`) ON DELETE SET NULL ON UPDATE CASCADE;

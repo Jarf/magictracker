@@ -209,6 +209,37 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'winbin':
+			$player = new Player();
+			$decks = $player->getPlayersDecks();
+			$winbins = $player->getPlayersWinBins();
+			$playernames = $player->getPlayerIdNameMap();
+			ob_start();
+			?>
+			<h1>Win Bin</h1>
+			<hr/>
+			<?php foreach($playernames as $pid => $pname): ?>
+			<label for="winbin<?=$pid?>"><?=$pname?></label>
+			<?php if(isset($decks[$pid])): ?>
+			<select id="winbin<?=$pid?>" class="winbinselect" data-player="<?=$pid?>">
+				<option>None</option>
+				<?php foreach($decks[$pid] as $deck): ?>
+				<option value="<?=$deck->deckId?>" <?=($winbins[$pid] == $deck->deckId ? 'selected' : '')?>><?=$deck->name?> - <?=empty($deck->colors) ? 'Colourless' : $deck->colors?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php else: ?>
+			hates Archidekt
+			<?php endif; ?>
+			<hr/>
+			<?php endforeach; ?>
+			<button id="savewinbin">Save Win Bin</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();
