@@ -779,7 +779,7 @@ class Stats{
 		}else{
 			$where = null;
 		}
-		$sql = 'SELECT game.id, game.date FROM game ' . $where . ' ORDER BY game.id ASC';
+		$sql = 'SELECT game.id, game.date FROM game JOIN points ON game.id = points.gameId ' . $where . ' GROUP BY game.id ORDER BY game.id ASC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
