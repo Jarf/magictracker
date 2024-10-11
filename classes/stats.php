@@ -803,16 +803,18 @@ class Stats{
 				}
 			}
 		}
-		$min = $max = $avg = 'N/A';
+		$min = $max = $avg = $total = 'N/A';
 		if(!empty($gamelengths)){
 			$min = convertSecondsToHumanReadable(min($gamelengths));
 			$max = convertSecondsToHumanReadable(max($gamelengths));
 			$avg = convertSecondsToHumanReadable(array_sum($gamelengths) / count($gamelengths));
+			$total = convertSecondsToHumanReadable(array_sum($gamelengths));
 		}
 		return array(
 			'Shortest Game: ' . $min,
 			'Longest Game: ' . $max,
-			'Average: ' . $avg
+			'Average: ' . $avg,
+			'Total: ' . $total
 		);
 	}
 }
