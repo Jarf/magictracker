@@ -25,7 +25,8 @@ class Stats{
 			'Dynamic Duos' => $this->getDuoStats(),
 			'Most Killed By' => $this->getKilledBy(),
 			'Game Stats' => $this->getGameStats(),
-			'Points' => $this->getPointsScored()
+			'Points' => $this->getPointsScored(),
+			'Time Lost' => $this->getGameLengths()
 		);
 		return $return;
 	}
@@ -761,6 +762,56 @@ class Stats{
 			}
 		}
 		return $return;
+	}
+
+	private function getGameLengths(){
+		$where = $bind = $gamelengths = array();
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT game.id, game.date FROM game ' . $where . ' ORDER BY game.id ASC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		$min = $average = $max = 'N/A';
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetchAll();
+			foreach($result as $key => $row){
+				$date = substr($row->date, 0, 10);
+				$nextkey = $key + 1;
+				$endgame = $date . ' 23:59:59';
+				if(isset($result[$nextkey]) && substr($result[$nextkey]->date, 0, 10) === $date){
+					$endgame = $result[$nextkey]->date;
+				}
+				$start = new DateTime($row->date);
+				$end = new DateTime($endgame);
+				$length = $end->getTimestamp() - $start->getTimestamp();
+				$gamelengths[] = $length;
+			}
+		}
+		$min = $max = $avg = 'N/A';
+		if(!empty($gamelengths)){
+			$min = convertSecondsToHumanReadable(min($gamelengths));
+			$max = convertSecondsToHumanReadable(max($gamelengths));
+			$avg = convertSecondsToHumanReadable(array_sum($gamelengths) / count($gamelengths));
+		}
+		return array(
+			'Shortest Game: ' . $min,
+			'Longest Game: ' . $max,
+			'Average: ' . $avg
+		);
 	}
 }
 ?>
