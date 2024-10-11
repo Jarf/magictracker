@@ -798,7 +798,9 @@ class Stats{
 				$start = new DateTime($row->date);
 				$end = new DateTime($endgame);
 				$length = $end->getTimestamp() - $start->getTimestamp();
-				$gamelengths[] = $length;
+				if($length < 21600){
+					$gamelengths[] = $length;
+				}
 			}
 		}
 		$min = $max = $avg = 'N/A';
