@@ -798,7 +798,7 @@ class Stats{
 				$start = new DateTime($row->date);
 				$end = new DateTime($endgame);
 				$length = $end->getTimestamp() - $start->getTimestamp();
-				if($length < 21600){
+				if($length < 21600 && $length > 360){
 					$gamelengths[] = $length;
 				}
 			}
