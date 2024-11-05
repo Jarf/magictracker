@@ -26,7 +26,8 @@ class Stats{
 			'Most Killed By' => $this->getKilledBy(),
 			'Game Stats' => $this->getGameStats(),
 			'Points' => $this->getPointsScored(),
-			'Time Lost' => $this->getGameLengths()
+			'Time Lost' => $this->getGameLengths(),
+			'Killed By Counts' => $this->getKilledByCount()
 		);
 		return $return;
 	}
@@ -637,6 +638,56 @@ class Stats{
 			$killer = array_key_first($values);
 			if(isset($players[$killer]) && isset($players[$row->killedId])){
 				$return[] = $players[$row->killedId] . ' always dies to ' . $players[$killer];
+			}
+		}
+		return $return;
+	}
+
+	private function getKilledByCount(){
+		$return = array();
+		$where = $bind = array();
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'kills.gameId = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'kills.killedId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT kills.killedId, kills.killerId FROM kills JOIN game ON kills.gameId = game.id ' . $where . ' ORDER BY kills.killedId, kills.killerId';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		$result = $this->db->fetchAll();
+		$players = new Player();
+		$players = $players->getPlayerIdNameMap();
+		$killed = array();
+		foreach($result as $row){
+			if(!isset($killed[$row->killedId])){
+				$killed[$row->killedId] = array();
+			}
+			if(!isset($killed[$row->killedId][$row->killerId])){
+				$killed[$row->killedId][$row->killerId] = 1;
+			}else{
+				$killed[$row->killedId][$row->killerId]++;
+			}
+		}
+		foreach($killed as $killedId => $killers){
+			$return[] = $players[$killedId] . ' killed by:';
+			arsort($killers);
+			foreach($killers as $killerId => $killCount){
+				$return[] = $players[$killerId] . ' - ' . $killCount;
 			}
 		}
 		return $return;
