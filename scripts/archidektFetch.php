@@ -14,7 +14,7 @@ print 'Done' . PHP_EOL . 'Fetch decks';
 foreach($players as $player){
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL, 'https://archidekt.com/api/decks/cards/?owner=' . $player->archidektName);
+	curl_setopt($ch, CURLOPT_URL, 'https://archidekt.com/api/decks/v3/?ownerUsername=' . $player->archidektName . '&deckFormat=3');
 	$response = curl_exec($ch);
 	$response = @json_decode($response);
 	if(!empty($response) && isset($response->results)){
