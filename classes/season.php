@@ -33,6 +33,8 @@ class Season{
 		$this->db->execute();
 		$id = $this->db->lastInsertId();
 		$this->getSeason($id);
+		$player = new player();
+		$player->resetPlayersWinBins();
 	}
 
 	private function getSeason(int $id = null, int $gameid = null, bool $latest = false){

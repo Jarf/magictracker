@@ -69,5 +69,14 @@ class Player{
 			$this->db->execute();
 		}
 	}
+
+	public function resetPlayersWinBins(){
+		$players = $this->getPlayers();
+		$winbindata = array();
+		foreach($players as $player){
+			$winbindata[$player->id] = null;
+		}
+		$this->updatePlayersWinBins($winbindata);
+	}
 }
 ?>
