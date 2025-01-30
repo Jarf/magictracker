@@ -240,6 +240,28 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'deckpicker':
+			$player = new Player();
+			$playernames = $player->getPlayerIdNameMap();
+			ob_start();
+			?>
+			<h1>Deck Picker</h1>
+			<h3>Excludes winbin decks</h3>
+			<select id="deckpickerplayer" class="deckpickerplayerselect">
+				<?php foreach($playernames as $playerid => $playername): ?>
+					<option value="<?=$playerid?>"><?=$playername?></option>
+				<?php endforeach; ?>
+			</select>
+			<hr/>
+			<div id="deckpickerresult"></div>
+			<button id="pickdeck">Pick A Random Deck</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();
