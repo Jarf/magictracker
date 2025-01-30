@@ -17,9 +17,25 @@ foreach($players as $player){
 	curl_setopt($ch, CURLOPT_URL, 'https://archidekt.com/api/decks/v3/?ownerUsername=' . $player->archidektName . '&deckFormat=3');
 	$response = curl_exec($ch);
 	$response = @json_decode($response);
+	curl_close($ch);
 	if(!empty($response) && isset($response->results)){
 		foreach($response->results as &$row){
 			if(isset($row->owner) && isset($row->owner->username) && $row->owner->username === $player->archidektName){
+				if(isset($row->featured) && !empty($row->featured)){
+					$imgpath = DIR_IMG . 'decks/' . $row->id . '.jpg';
+					if(file_exists($imgpath)){
+						unlink($imgpath);
+					}
+					$fp = fopen(DIR_IMG . 'decks/' . $row->id . '.jpg', 'w+');
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $row->featured);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+				    curl_setopt($ch, CURLOPT_FILE, $fp);
+				    curl_exec($ch);
+				    curl_close($ch);
+				    fclose($fp);
+				}
 				$colors = '';
 				if(isset($row->colors) && !empty($row->colors)){
 					foreach($row->colors as $color => $count){
@@ -58,6 +74,25 @@ if(!empty($deckids)){
 	$sql = 'DELETE FROM decks WHERE deckId NOT IN (' . implode(',', $deckids) . ')';
 	$db->query($sql);
 	$db->execute();
+}
+print 'Done' . PHP_EOL . 'Removing images not associated with a deck...';
+$sql = 'SELECT deckId FROM decks';
+$db->query($sql);
+$db->execute();
+$rs = $db->fetchAll();
+$deckIds = array();
+foreach($rs as $row){
+	$deckIds[] = $row->deckId;
+}
+if(!empty($deckIds)){
+	$imageList = getDirectoryFiles(DIR_IMG . 'decks/');
+	foreach($imageList as $img){
+		$imgId = basename($img, '.jpg');
+		if(is_numeric($imgId) && !in_array($imgId, $deckIds)){
+			unlink($img);
+			print '.';
+		}
+	}
 }
 print 'Done' . PHP_EOL;
 ?>

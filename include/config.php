@@ -17,6 +17,7 @@ define('DIR_TPL', DIR_ROOT . 'tpl/');
 define('DIR_CACHE', '/tmp/');
 define('DIR_CLASSES', DIR_ROOT . 'classes/');
 define('DIR_CLASSES_ABSTRACT', DIR_CLASSES . 'abstract/');
+define('DIR_IMG', DIR_ROOT . 'img/');
 
 // Site Paths
 define('SITE_CSS', '/css/');
