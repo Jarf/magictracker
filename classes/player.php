@@ -78,5 +78,21 @@ class Player{
 		}
 		$this->updatePlayersWinBins($winbindata);
 	}
+
+	public function randomDeck(int $playerid, bool $excludeWinBin = true){
+		$return = false;
+		$sql = 'SELECT decks.deckId, decks.name, decks.colors FROM decks LEFT JOIN player ON decks.playerId = player.id WHERE player.id = :playerId';
+		if($excludeWinBin === true){
+			$sql .= ' AND (player.winbin IS NULL OR decks.deckId != player.winbin)';
+		}
+		$sql .= ' ORDER BY RAND() LIMIT 1';
+		$this->db->query($sql);
+		$this->db->bind('playerId', $playerid);
+		$this->db->execute();
+		if($this->db->rowCount() === 1){
+			$return = $this->db->fetch();
+		}
+		return $return;
+	}
 }
 ?>

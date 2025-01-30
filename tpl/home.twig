@@ -61,12 +61,16 @@
 	</button>
 	<button class="otherbutton" id="playerstats">
 		<a href="/stats/{{season.id}}">
-			<img alt="Jumpstart" src="/img/weatherlight.svg"/>
+			<img alt="Weatherlight" src="/img/weatherlight.svg"/>
 			Stats
 		</a>
 	</button>
 	<button class="otherbutton" id="{{seasonexpired == false ? 'startnewgame' : 'startnewseason'}}">
 		<img alt="Desparked" src="/img/desparked.svg"/>
 		New {{seasonexpired == false ? 'Game' : 'Season'}}
+	</button>
+	<button class="otherbutton" id="deckpicker">
+		<img alt="Jumpstart 2025" src="/img/jumpstart25.svg"/>
+		Deck Picker
 	</button>
 </div>

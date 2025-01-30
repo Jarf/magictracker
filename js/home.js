@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		populateModal('winbin');
 		toggleModal();
 	});
+	document.getElementById('deckpicker').addEventListener('click', function(){
+		clearModal();
+		populateModal('deckpicker');
+		toggleModal();
+	});
 	var seasoncountdowns = document.querySelectorAll('div.row.seasoncountdown');
 	for (let i = 0; i < seasoncountdowns.length; i++){
 		seasoncountdowns[i].addEventListener('click', function(){
@@ -204,6 +209,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					toggleModal();
 				}
 				xhttp.open('GET', '/ajax/winbin.php?' + getargs, true);
+				xhttp.send();
+				break;
+
+			case 'pickdeck':
+				var playerid = document.getElementById('deckpickerplayer').value;
+				xhttp.open('GET', '/ajax/deckpicker.php?id=' + playerid, true);
+				xhttp.onload = function(){
+					document.getElementById('deckpickerresult').innerHTML = xhttp.responseText;
+				}
 				xhttp.send();
 				break;
 		}
