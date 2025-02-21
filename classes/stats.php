@@ -704,6 +704,7 @@ class Stats{
 
 	private function getQuickestKill(){
 		$return = 'N/A';
+		$where = $bind = array();
 		if(!empty($this->seasonId)){
 			$where[] = 'game.seasonId = :seasonId';
 			$bind['seasonId'] = $this->seasonId;
