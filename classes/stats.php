@@ -27,7 +27,8 @@ class Stats{
 			'Game Stats' => $this->getGameStats(),
 			'Points' => $this->getPointsScored(),
 			'Time Lost' => $this->getGameLengths(),
-			'Killed By Counts' => $this->getKilledByCount()
+			'Killed By Counts' => $this->getKilledByCount(),
+			'Clean Sweeps' => $this->getCleanSweeps()
 		);
 		return $return;
 	}
@@ -867,6 +868,56 @@ class Stats{
 			'Average: ' . $avg,
 			'Total: ' . $total
 		);
+	}
+
+	private function getCleanSweeps(){
+		$where = $bind = $cleansweeps = $return = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		foreach($players as $player){
+			$cleansweeps[$player->id] = 0;
+		}
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT game.id, GROUP_CONCAT(DISTINCT(kills.killerId)) AS killers FROM game JOIN kills ON kills.gameId = game.id ' . $where . ' GROUP BY game.id ORDER BY game.id ASC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$result = $this->db->fetchAll();
+			foreach($result as $row){
+				if(is_numeric($row->killers) && !empty($row->killers)){
+					$cleansweeps[$row->killers]++;
+				}
+			}
+		}
+		arsort($cleansweeps);
+		foreach($cleansweeps as $pid => $cs){
+			foreach($players as $player){
+				if($pid === $player->id){
+					$return[] = $player->name . ': ' . $cs;
+					continue;
+				}
+			}
+		}
+		return $return;
 	}
 }
 ?>
