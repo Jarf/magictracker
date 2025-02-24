@@ -28,7 +28,8 @@ class Stats{
 			'Points' => $this->getPointsScored(),
 			'Time Lost' => $this->getGameLengths(),
 			'Killed By Counts' => $this->getKilledByCount(),
-			'Clean Sweeps' => $this->getCleanSweeps()
+			'Clean Sweeps' => $this->getCleanSweeps(),
+			'Attendance' => $this->getAttendance()
 		);
 		return $return;
 	}
@@ -918,6 +919,75 @@ class Stats{
 				}
 			}
 		}
+		return $return;
+	}
+
+	private function getAttendance(){
+		$where = $bind = $return = $attendance = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT COUNT(game.id) AS gamecount FROM game ' . $where;
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		$gamecount = 0;
+		if($this->db->rowCount() > 0){
+			$gamecount = $this->db->fetch();
+			$gamecount = $gamecount->gamecount;
+		}
+		$sql = 'SELECT concede.playerId, COUNT(concede.gameId) AS concedecount FROM concede JOIN game on concede.gameId = game.id ' . $where . ' GROUP BY concede.playerId';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$rs = $this->db->fetchAll();
+			foreach($rs as $row){
+				if($row->concedecount === 0){
+					$attendance[$row->playerId] = 100;
+				}else{
+					$attendance[$row->playerId] = 100 - round((($gamecount / 100) * $row->concedecount) * 10, 2);
+				}
+				
+			}
+		}
+		foreach($players as $player){
+			if(!isset($attendance[$player->id])){
+				$attendance[$player->id] = 100;
+			}
+		}
+
+		arsort($attendance);
+
+		foreach($attendance as $akey => $aval){
+			foreach($players as $player){
+				if($akey === $player->id){
+					$return[] = $player->name . ': ' . $aval . '%';
+					break;
+				}
+			}
+		}
+
 		return $return;
 	}
 }
