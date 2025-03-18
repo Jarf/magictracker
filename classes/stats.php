@@ -29,7 +29,8 @@ class Stats{
 			'Time Lost' => $this->getGameLengths(),
 			'Killed By Counts' => $this->getKilledByCount(),
 			'Clean Sweeps' => $this->getCleanSweeps(),
-			'Attendance' => $this->getAttendance()
+			'Attendance' => $this->getAttendance(),
+			'Win Streaks' => $this->getConsecutiveWins()
 		);
 		return $return;
 	}
@@ -984,6 +985,64 @@ class Stats{
 			$return = 'N/A';
 		}
 
+		return $return;
+	}
+
+	private function getConsecutiveWins(){
+		$where = $bind = $return = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		foreach($players as $player){
+			$return[$player->id] = 0;
+		}
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT points.playerId FROM game JOIN points ON game.id = points.gameId AND points.points = 2 JOIN season ON game.seasonId = season.id ' . $where . ' ORDER BY game.date ASC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		$lastwinner = null;
+		$consecutiveswins = 0;
+		if($this->db->rowCount() > 0){
+			$results = $this->db->fetchAll();
+			foreach($results as $row){
+				if($row->playerId !== $lastwinner){
+					$consecutivewins = 1;
+				}else{
+					$consecutivewins++;
+				}
+				if($consecutivewins > $return[$row->playerId]){
+					$return[$row->playerId] = $consecutivewins;
+				}
+				$lastwinner = $row->playerId;
+			}
+		}
+		arsort($return);
+		foreach($return as $key => $val){
+			foreach($players as $player){
+				if($key === $player->id){
+					$return[$key] = $player->name . ': ' . $val;
+					break;
+				}
+			}
+		}
 		return $return;
 	}
 }
