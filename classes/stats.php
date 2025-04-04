@@ -1148,7 +1148,7 @@ class Stats{
 		foreach($return as $rkey => $rval){
 			foreach($players as $player){
 				if($rkey === $player->id){
-					$return[$rkey] = $player->name . ': ' . $rval . ' days';
+					$return[$rkey] = $player->name . ': ' . $rval . ' day(s)';
 				}
 			}
 		}
