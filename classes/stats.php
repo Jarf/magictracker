@@ -1132,7 +1132,7 @@ class Stats{
 			$where = null;
 		}
 
-		$sql = 'SELECT player.id, player.name, TIMESTAMPDIFF(DAY, MAX(game.date), NOW()) AS lastScored FROM player JOIN points ON player.id = points.playerId JOIN game ON game.id = points.gameId ' . $where . ' GROUP BY player.id, points.playerId ORDER BY MAX(game.date) DESC';
+		$sql = 'SELECT player.id, player.name, TIMESTAMPDIFF(HOUR, MAX(game.date), NOW()) AS lastScored FROM player JOIN points ON player.id = points.playerId JOIN game ON game.id = points.gameId ' . $where . ' GROUP BY player.id, points.playerId ORDER BY MAX(game.date) DESC';
 		$this->db->query($sql);
 		foreach($bind as $key => $val){
 			$this->db->bind($key, $val);
@@ -1148,7 +1148,20 @@ class Stats{
 		foreach($return as $rkey => $rval){
 			foreach($players as $player){
 				if($rkey === $player->id){
-					$return[$rkey] = $player->name . ': ' . $rval . ' day(s)';
+					$values = array();
+					$days = 0;
+					$hours = $rval;
+					if($rval >= 24){
+						$hours = $rval % 24;
+						$days = floor($rval/24);
+					}
+					if($days > 0){
+						$values[] = $days . ' day' . ($days > 1 ? 's' : '');
+					}
+					if($hours > 0){
+						$values[] = $hours . ' hour' . ($hours > 1 ? 's' : '');
+					}
+					$return[$rkey] = $player->name . ': ' . implode(', ', $values);
 				}
 			}
 		}
