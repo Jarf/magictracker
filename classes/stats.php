@@ -31,7 +31,8 @@ class Stats{
 			'Clean Sweeps' => $this->getCleanSweeps(),
 			'Attendance' => $this->getAttendance(),
 			'Win Streaks' => $this->getConsecutiveWins(),
-			'Loss Streaks' => $this->getConsecutiveLosses()
+			'Loss Streaks' => $this->getConsecutiveLosses(),
+			'Last Scored Point' => $this->getLastPointScored()
 		);
 		return $return;
 	}
@@ -1048,7 +1049,7 @@ class Stats{
 	}
 
 	private function getConsecutiveLosses(){
-		$where = $bind = $return = $return = $consecutivelosses = $games = array();
+		$where = $bind = $return = $consecutivelosses = $games = array();
 		$players = new Player();
 		$players = $players->getPlayers();
 		foreach($players as $player){
@@ -1099,6 +1100,55 @@ class Stats{
 				if($key === $player->id){
 					$return[$key] = $player->name . ': ' . $val;
 					break;
+				}
+			}
+		}
+		return $return;
+	}
+
+	private function getLastPointScored(){
+		$where = $bind = $return = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		foreach($players as $player){
+			$return[$player->id] = 'N/A';
+		}
+		$where[] = 'points.points IS NOT NULL';
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+
+		$sql = 'SELECT player.id, player.name, TIMESTAMPDIFF(DAY, MAX(game.date), NOW()) AS lastScored FROM player JOIN points ON player.id = points.playerId JOIN game ON game.id = points.gameId ' . $where . ' GROUP BY player.id, points.playerId ORDER BY MAX(game.date) DESC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$results = $this->db->fetchAll();
+			foreach($results as $rs){
+				$return[$rs->id] = $rs->lastScored;
+			}
+		}
+		asort($return);
+		foreach($return as $rkey => $rval){
+			foreach($players as $player){
+				if($rkey === $player->id){
+					$return[$rkey] = $player->name . ': ' . $rval . ' days';
 				}
 			}
 		}
