@@ -30,7 +30,8 @@ class Stats{
 			'Killed By Counts' => $this->getKilledByCount(),
 			'Clean Sweeps' => $this->getCleanSweeps(),
 			'Attendance' => $this->getAttendance(),
-			'Win Streaks' => $this->getConsecutiveWins()
+			'Win Streaks' => $this->getConsecutiveWins(),
+			'Loss Streaks' => $this->getConsecutiveLosses()
 		);
 		return $return;
 	}
@@ -1032,6 +1033,64 @@ class Stats{
 					$return[$row->playerId] = $consecutivewins;
 				}
 				$lastwinner = $row->playerId;
+			}
+		}
+		arsort($return);
+		foreach($return as $key => $val){
+			foreach($players as $player){
+				if($key === $player->id){
+					$return[$key] = $player->name . ': ' . $val;
+					break;
+				}
+			}
+		}
+		return $return;
+	}
+
+	private function getConsecutiveLosses(){
+		$where = $bind = $return = $return = $consecutivelosses = $games = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		foreach($players as $player){
+			$return[$player->id] = $consecutivelosses[$player->id] = $return[$player->id] = 0;
+		}
+		$where[] = 'points.points = 2';
+		if(!empty($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($this->gameId)){
+			$where[] = 'game.id = :gameId';
+			$bind['gameId'] = $this->gameId;
+		}
+		if(!empty($this->playerId)){
+			$where[] = 'points.playerId = :playerId';
+			$bind['playerId'] = $this->playerId;
+		}
+		if(!empty($where)){
+			$where = 'WHERE ' . implode(' AND ', $where);
+		}else{
+			$where = null;
+		}
+		$sql = 'SELECT game.id, points.playerId, points.points FROM game JOIN points ON game.id = points.gameId JOIN season ON game.seasonId = season.id ' . $where . ' GROUP BY game.id, points.playerId ORDER BY game.date ASC';
+		$this->db->query($sql);
+		foreach($bind as $key => $val){
+			$this->db->bind($key, $val);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$results = $this->db->fetchAll();
+			foreach($results as $rs){
+				foreach($consecutivelosses as $playerid => $concount){
+					if($playerid === $rs->playerId){
+						$consecutivelosses[$playerid] = 0;
+					}else{
+						$consecutivelosses[$playerid]++;
+					}
+					if($consecutivelosses[$playerid] > $return[$playerid]){
+						$return[$playerid] = $consecutivelosses[$playerid];
+					}
+				}
 			}
 		}
 		arsort($return);
