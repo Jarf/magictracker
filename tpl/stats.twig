@@ -1,6 +1,6 @@
 <div class="row">
 	<h1>{{page_title}}</h1>
-	<select id="statseasonselect">
+	<select aria-label="Select Season" id="statseasonselect">
 		<option value="" {{seasonid is empty ? 'selected' : ''}}>Global</option>
 		{% for season in seasons %}
 		<option value="{{season.id}}" {{seasonid == season.id ? 'selected' : ''}}>{{season.name}} ({{season.startDate}} - {{season.endDate}})</option>
