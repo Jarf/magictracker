@@ -34,6 +34,11 @@ class Stats{
 			'Loss Streaks' => $this->getConsecutiveLosses(),
 			'Last Scored Point' => $this->getLastPointScored()
 		);
+		if(!isset($this->seasonId)){
+			$return['Season Wins'] = $this->getSeasonWins();
+		}else{
+			$return['Season Winner'] = $this->getSeasonWinner();
+		}
 		return $return;
 	}
 
@@ -1166,6 +1171,58 @@ class Stats{
 			}
 		}
 		return $return;
+	}
+
+	private function getSeasonWins(){
+		$return = array();
+		$players = new Player();
+		$players = $players->getPlayers();
+		foreach($players as $player){
+			$return[$player->id] = 0;
+		}
+		$seasonwins = array();
+		$sql = 'SELECT season.id, points.playerId, SUM(points.points) FROM points JOIN game ON points.gameId = game.id JOIN season ON game.seasonId = season.id GROUP BY season.id, points.playerId ORDER BY season.id ASC, SUM(points.points) DESC';
+		$this->db->query($sql);
+		$this->db->execute();
+		$lastSeason = null;
+		if($this->db->rowCount() > 0){
+			$results = $this->db->fetchAll();
+			foreach($results as $rs){
+				if($lastSeason === $rs->id){
+					continue;
+				}
+				$return[$rs->playerId]++;
+				$lastSeason = $rs->id;
+			}
+		}
+		if(!empty($return)){
+			arsort($return);
+			foreach($return as $rkey => $rval){
+				foreach($players as $player){
+					if($rkey === $player->id){
+						$return[$rkey] = $player->name . ': ' . $rval;
+						break;
+					}
+				}
+			}
+		}else{
+			$return = array('N/A');
+		}
+		return $return;
+	}
+
+	private function getSeasonWinner(){
+		$return = 'N/A';
+		if(isset($this->seasonId)){
+			$season = new Season($this->seasonId);
+			if(date('Y-m-d H:i:s') >= $season->endDate){
+				$points = $this->getPointsScored();
+				if(!empty($points)){
+					$return = current($points) . ' points';
+				}
+			}
+		}
+		return array($return);
 	}
 }
 ?>
