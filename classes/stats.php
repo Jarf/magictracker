@@ -1181,8 +1181,19 @@ class Stats{
 			$return[$player->id] = 0;
 		}
 		$seasonwins = array();
-		$sql = 'SELECT season.id, points.playerId, SUM(points.points) FROM points JOIN game ON points.gameId = game.id JOIN season ON game.seasonId = season.id GROUP BY season.id, points.playerId ORDER BY season.id ASC, SUM(points.points) DESC';
+		$activeseason = new Season();
+		$activeseason->getLatestSeason();
+		$ignoreseason = null;
+		$where = '';
+		if(isset($activeseason->id) && date('Y-m-d H:i:s') < $activeseason->endDate){
+			$ignoreseason = $activeseason->id;
+			$where = ' WHERE season.id != :seasonId';
+		}
+		$sql = 'SELECT season.id, points.playerId, SUM(points.points) FROM points JOIN game ON points.gameId = game.id JOIN season ON game.seasonId = season.id ' . $where . ' GROUP BY season.id, points.playerId ORDER BY season.id ASC, SUM(points.points) DESC';
 		$this->db->query($sql);
+		if(!empty($where) && !empty($ignoreseason)){
+			$this->db->bind('seasonId', $ignoreseason);
+		}
 		$this->db->execute();
 		$lastSeason = null;
 		if($this->db->rowCount() > 0){
