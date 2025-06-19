@@ -32,8 +32,7 @@ class Stats{
 			'Attendance' => $this->getAttendance(),
 			'Win Streaks' => $this->getConsecutiveWins(),
 			'Loss Streaks' => $this->getConsecutiveLosses(),
-			'Last Scored Point' => $this->getLastPointScored(),
-			'Rivalries' => $this->getRivalries()
+			'Last Scored Point' => $this->getLastPointScored()
 		);
 		if(!isset($this->seasonId)){
 			$return['Season Wins'] = $this->getSeasonWins();
