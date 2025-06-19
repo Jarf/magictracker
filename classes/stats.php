@@ -32,7 +32,8 @@ class Stats{
 			'Attendance' => $this->getAttendance(),
 			'Win Streaks' => $this->getConsecutiveWins(),
 			'Loss Streaks' => $this->getConsecutiveLosses(),
-			'Last Scored Point' => $this->getLastPointScored()
+			'Last Scored Point' => $this->getLastPointScored(),
+			'Rivalries' => $this->getRivalries()
 		);
 		if(!isset($this->seasonId)){
 			$return['Season Wins'] = $this->getSeasonWins();
@@ -614,7 +615,6 @@ class Stats{
 
 	private function getKilledBy(){
 		$return = array();
-		$where = $bind = array();
 		if(!empty($this->seasonId)){
 			$where[] = 'game.seasonId = :seasonId';
 			$bind['seasonId'] = $this->seasonId;
@@ -653,8 +653,47 @@ class Stats{
 		return $return;
 	}
 
-	private function getKilledByCount(){
+	private function getRivalries(){
 		$return = array();
+		$result = $this->getKilledByData();
+		$players = new Player();
+		$players = $players->getPlayerIdNameMap();
+		$kills = $averages = $rivals = array();
+		foreach($result as $row){
+			if(!isset($kills[$row->killerId])){
+				$kills[$row->killerId] = array();
+			}
+			if(!isset($kills[$row->killerId][$row->killedId])){
+				$kills[$row->killerId][$row->killedId] = 0;
+			}
+			$kills[$row->killerId][$row->killedId]++;
+		}
+		foreach($kills as $killerId => $killed){
+			if(!isset($averages[$killerId])){
+				$averages[$killerId] = array();
+			}
+			foreach($killed as $killedId => $killedCount){
+				if(!isset($averages[$killerId][$killedId])){
+					$averages[$killerId][$killedId] = 0;
+				}
+				if(isset($kills[$killedId]) && isset($kills[$killedId][$killerId])){
+					$averages[$killerId][$killedId] = array_sum(array($kills[$killedId][$killerId], $killedCount))/2;
+				}
+			}
+		}
+		foreach($averages as $key => $data){
+			arsort($averages[$key]);
+			$rival = array_key_first($averages[$key]);
+			$rivals[$key] = $rival;
+		}
+
+		foreach($rivals as $pkey => $rival){
+			$return[] = $players[$pkey] . '\'s rival is ' . $players[$rival];
+		}
+		return $return;
+	}
+
+	private function getKilledByData(){
 		$where = $bind = array();
 		if(!empty($this->seasonId)){
 			$where[] = 'game.seasonId = :seasonId';
@@ -680,6 +719,12 @@ class Stats{
 		}
 		$this->db->execute();
 		$result = $this->db->fetchAll();
+		return $result;
+	}
+
+	private function getKilledByCount(){
+		$return = array();
+		$result = $this->getKilledByData();
 		$players = new Player();
 		$players = $players->getPlayerIdNameMap();
 		$killed = array();
