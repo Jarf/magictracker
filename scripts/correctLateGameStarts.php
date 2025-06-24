@@ -16,7 +16,7 @@ foreach($games as $game){
 		}else{
 			$newstart = substr($game->date, 0, 10) . ' 19:00:00';
 		}
-		if($newstart !== null && $newstart > $prevgamelastkill && $newstart > $prevgamestart){
+		if($newstart !== null && $newstart > $prevgamelastkill && $newstart > $prevgamestart && $game->date !== $newstart){
 			$db->query('UPDATE game SET game.date = :newstart WHERE game.id = :gameid');
 			$db->bind('newstart', $newstart);
 			$db->bind('gameid', $game->id);
