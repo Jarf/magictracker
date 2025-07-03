@@ -1156,7 +1156,7 @@ class Stats{
 					$values = array();
 					$days = 0;
 					$hours = $rval;
-					if($rval >= 24){
+					if(is_int($rval) && $rval >= 24){
 						$hours = $rval % 24;
 						$days = floor($rval/24);
 					}
