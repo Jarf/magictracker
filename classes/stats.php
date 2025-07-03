@@ -1159,12 +1159,14 @@ class Stats{
 					if(is_int($rval) && $rval >= 24){
 						$hours = $rval % 24;
 						$days = floor($rval/24);
-					}
-					if($days > 0){
-						$values[] = $days . ' day' . ($days > 1 ? 's' : '');
-					}
-					if($hours > 0){
-						$values[] = $hours . ' hour' . ($hours > 1 ? 's' : '');
+						if($days > 0){
+							$values[] = $days . ' day' . ($days > 1 ? 's' : '');
+						}
+						if($hours > 0){
+							$values[] = $hours . ' hour' . ($hours > 1 ? 's' : '');
+						}
+					}else{
+						$values[] = 'N/A';
 					}
 					$return[$rkey] = $player->name . ': ' . implode(', ', $values);
 				}
