@@ -44,3 +44,7 @@ ALTER TABLE `decks` ADD INDEX(`deckId`);
 -- Winbin
 ALTER TABLE `player` ADD `winbin` BIGINT UNSIGNED NULL AFTER `archidektName`;
 ALTER TABLE `player` ADD CONSTRAINT `playerwinbin_to_deckid` FOREIGN KEY (`winbin`) REFERENCES `decks`(`deckId`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Deck colour combos
+CREATE TABLE `magic`.`deckColors` ( `combo` VARCHAR(5) NOT NULL , `name` VARCHAR(255) NOT NULL , UNIQUE `deckColorsId` (`combo`)) ENGINE = InnoDB;
+INSERT INTO deckColors (combo, name) VALUES ('WUBRG','Rainbow'),('UBRG','Glint-Eye'),('WBRG','Dune-Brood'),('WURG','Ink-Treader'),('WUBG','Witch-Maw'),('WUBR','Yore-Tiller'),('WUB','Esper'),('UBR','Grixis'),('BRG','Jund'),('WRG','Naya'),('WUG','Bant'),('WBG','Abzan'),('URG','Temur'),('UBG','Sultai'),('WUR','Jeskai'),('WBR','Mardu'),('WU','Azorius'),('WB','Orzhov'),('WR','Boros'),('WG','Selesnya'),('UB','Dimir'),('UR','Izzet'),('UG','Simic'),('BR','Rakdos'),('BG','Golgari'),('RG','Gruul'),('W','White'),('U','Blue'),('B','Black'),('R','Red'),('G','Green'),('C','Colourless');

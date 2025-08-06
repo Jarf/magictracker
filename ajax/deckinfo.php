@@ -4,40 +4,17 @@ require_once(dirname(__DIR__) . '/include/config.php');
 require_once(dirname(__DIR__) . '/include/autoload.php');
 $player = false;
 $html = '';
-$colorcombos = array(
-	'WUBRG' => array(),
-	'UBRG' => array(),
-	'WBRG' => array(),
-	'WURG' => array(),
-	'WUBG' => array(),
-	'WUBR' => array(),
-	'WUB' => array(),
-	'UBR' => array(),
-	'BRG' => array(),
-	'WRG' => array(),
-	'WUG' => array(),
-	'WBG' => array(),
-	'URG' => array(),
-	'UBG' => array(),
-	'WUR' => array(),
-	'WBR' => array(),
-	'WU' => array(),
-	'WB' => array(),
-	'WR' => array(),
-	'WG' => array(),
-	'UB' => array(),
-	'UR' => array(),
-	'UG' => array(),
-	'BR' => array(),
-	'BG' => array(),
-	'RG' => array(),
-	'W' => array(),
-	'U' => array(),
-	'B' => array(),
-	'R' => array(),
-	'G' => array(),
-	'C' => array()
-);
+$db = new db();
+$db->query('SELECT combo, name FROM deckColors ORDER BY LENGTH(combo) DESC, combo DESC');
+$db->execute();
+$rs = $db->fetchAll();
+$colorcombos = array();
+foreach($rs as $colorcombo){
+	$colorcombos[$colorcombo->combo] = array(
+		'name' => $colorcombo->name,
+		'decks' => array()
+	);
+}
 if(isset($_GET) && isset($_GET['id']) && is_numeric($_GET['id'])){
 	$player = intval($_GET['id']);
 	$decks = new Player();
@@ -46,14 +23,14 @@ if(isset($_GET) && isset($_GET['id']) && is_numeric($_GET['id'])){
 		$decks = $decks[$player];
 
 		foreach($decks as $deck){
-			$colorcombos[$deck->colors][] = $deck->name;
+			$colorcombos[$deck->colors]['decks'][] = $deck->name;
 		}
 		ob_start();
 		?>
-		<table>
+		<table id="deckColorTable">
 			<thead>
 				<tr>
-					<th>Colours</th><th>Decks</th>
+					<th>Colours</th><th>Name</th><th>Decks</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,11 +45,12 @@ if(isset($_GET) && isset($_GET['id']) && is_numeric($_GET['id'])){
 				foreach($mana as $mval){
 					$manahtml .= '<img src="/img/mana/' . $mval . '.svg" height=15 width=15/>';
 				}
-				$decks = empty($decks) ? '-' : implode('<br/>', $decks);
+				$deckshtml = empty($decks['decks']) ? '-' : implode('<br/>', $decks['decks']);
 				?>
 				<tr>
 					<td><?=$manahtml?></td>
-					<td><?=$decks?></td>
+					<td><?=$decks['name']?></td>
+					<td><?=$deckshtml?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>
