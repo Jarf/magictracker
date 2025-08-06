@@ -276,8 +276,9 @@ if(isset($_GET) && isset($_GET['type'])){
 				<?php endforeach; ?>
 			</select>
 			<hr/>
-			<div id="deckinforesult"></div>
 			<button id="deckinfo">Show Deck Colours</button>
+			<hr/>
+			<div id="deckinforesult"></div>
 			<hr/>
 			<button id="closemodal">Close</button>
 			<?php
