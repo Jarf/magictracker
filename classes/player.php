@@ -26,10 +26,16 @@ class Player{
 		return $return;
 	}
 
-	public function getPlayersDecks(){
+	public function getPlayersDecks(int $playerId = null){
 		$return = array();
 		$sql = 'SELECT decks.playerId, decks.deckId, decks.name, decks.colors FROM decks';
+		if(!is_null($playerId)){
+			$sql .= ' WHERE decks.playerId = :playerId';
+		}
 		$this->db->query($sql);
+		if(!is_null($playerId)){
+			$this->db->bind('playerId', $playerId);
+		}
 		$this->db->execute();
 		if($this->db->rowCount() > 0){
 			$result = $this->db->fetchAll();

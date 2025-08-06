@@ -262,6 +262,28 @@ if(isset($_GET) && isset($_GET['type'])){
 			$html = ob_get_clean();
 			print $html;
 			break;
+
+		case 'deckinfo':
+			$player = new Player();
+			$playernames = $player->getPlayerIdNameMap();
+			ob_start();
+			?>
+			<h1>Deck Colours</h1>
+			<h3>Show combos you have decks in</h3>
+			<select id="deckinfoplayer" class="deckpickerplayerselect">
+				<?php foreach($playernames as $playerid => $playername): ?>
+					<option value="<?=$playerid?>"><?=$playername?></option>
+				<?php endforeach; ?>
+			</select>
+			<hr/>
+			<div id="deckinforesult"></div>
+			<button id="deckinfo">Show Deck Colours</button>
+			<hr/>
+			<button id="closemodal">Close</button>
+			<?php
+			$html = ob_get_clean();
+			print $html;
+			break;
 		
 		default:
 			display404();
