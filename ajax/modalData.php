@@ -278,6 +278,9 @@ if(isset($_GET) && isset($_GET['type'])){
 			<hr/>
 			<button id="deckinfo">Show Deck Colours</button>
 			<hr/>
+			<input type="radio" id="deckinfoShowAllRadio" name="deckInfoShowRadio" checked/><label for="deckinfoShowAllRadio">Show All</label>
+			<input type="radio" id="deckinfoShowEmptyRadio" name="deckInfoShowRadio"/><label for="deckinfoShowEmptyRadio">Show Empty</label>
+			<input type="radio" id="deckinfoShowPopulatedRadio" name="deckInfoShowRadio"/><label for="deckinfoShowPopulatedRadio">Show Populated</label>
 			<div id="deckinforesult"></div>
 			<hr/>
 			<button id="closemodal">Close</button>

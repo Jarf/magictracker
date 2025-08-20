@@ -47,7 +47,7 @@ if(isset($_GET) && isset($_GET['id']) && is_numeric($_GET['id'])){
 				}
 				$deckshtml = empty($decks['decks']) ? '-' : implode('<br/>', $decks['decks']);
 				?>
-				<tr>
+				<tr class="<?=empty($decks['decks']) ? 'deckInfoEmpty' : 'deckInfoPopulated'?>">
 					<td><?=$manahtml?></td>
 					<td><?=$decks['name']?></td>
 					<td><?=$deckshtml?></td>

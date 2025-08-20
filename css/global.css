@@ -209,3 +209,10 @@ a{
 	text-decoration: none;
 	color: inherit;
 }
+
+input#deckinfoShowEmptyRadio:checked ~ div#deckinforesult > table#deckColorTable > tbody > tr.deckInfoPopulated{
+	display: none;
+}
+input#deckinfoShowPopulatedRadio:checked ~ div#deckinforesult > table#deckColorTable > tbody > tr.deckInfoEmpty{
+	display: none;
+}
