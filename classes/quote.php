@@ -44,12 +44,12 @@ class Quote{
 	private function quoteAsString(){
 		$string = array();
 		if(!empty($this->quote)){
-			$string[] = '"' . $this->quote . '"';
+			$string[] = '"' . $this->quote . '"<br/>';
 		}
 		if(!empty($this->playerName)){
-			$string[] = ' - ' . $this->playerName;
+			$string[] = $this->playerName;
 		}else{
-			$string[] = ' - unknown';
+			$string[] = 'unknown';
 		}
 		if(!empty($this->date)){
 			$string[] = '<br/>circa ' . date('jS F, Y', strtotime($this->date));
