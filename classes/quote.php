@@ -52,7 +52,7 @@ class Quote{
 			$string[] = 'unknown';
 		}
 		if(!empty($this->date)){
-			$string[] = '<br/>circa ' . date('jS F, Y', strtotime($this->date));
+			$string[] = ', circa ' . date('jS F, Y', strtotime($this->date));
 		}else{
 			$string[] = ', n.d.';
 		}
