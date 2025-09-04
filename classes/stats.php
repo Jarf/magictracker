@@ -1273,5 +1273,39 @@ class Stats{
 		}
 		return $return;
 	}
+
+	public function getWinsChartData(){
+		$return = array();
+		$players = new player();
+		$players = $players->getPlayerIdNameMap();
+		foreach($players as $pid => $player){
+			$return[$pid] = 0;
+		}
+		$sql = 'SELECT points.playerId, COUNT(points.gameId) AS wins FROM points JOIN game on points.gameId = game.id';
+		$where = $bind = array();
+		$where[] = 'points.points = 2';
+		if(isset($this->seasonId)){
+			$where[] = 'game.seasonId = :seasonId';
+			$bind['seasonId'] = $this->seasonId;
+		}
+		if(!empty($where)){
+			$sql .= ' WHERE ' . implode(' AND ', $where);
+		}
+		$sql .= ' GROUP BY points.playerId';
+		$this->db->query($sql);
+		if(!empty($bind)){
+			foreach($bind as $bkey => $bval){
+				$this->db->bind($bkey, $bval);
+			}
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$rs = $this->db->fetchAll();
+			foreach($rs as $row){
+				$return[$row->playerId] = $row->wins;
+			}
+		}
+		return $return;
+	}
 }
 ?>

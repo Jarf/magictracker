@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		location.assign('/stats/' + this.value);
 	});
 
-	// Points bar chart
+	// Points line chart
 	let xhttp1 = new XMLHttpRequest();
 	let url = '/ajax/chartData.php?chart=points';
 	if(seasonId !== ''){
@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 	}
 	xhttp1.send();
 
+	// KD line chart
 	url = '/ajax/chartData.php?chart=kd';
 	if(seasonId !== ''){
 		url += '&season=' + seasonId;
@@ -82,4 +83,49 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		}
 	}
 	xhttp2.send();
+
+	// Wins polar area chart
+	url = '/ajax/chartData.php?chart=wins';
+	if(seasonId !== ''){
+		url += '&season=' + seasonId;
+	}
+	let xhttp3 = new XMLHttpRequest();
+	xhttp3.responseType = 'json';
+	xhttp3.open("GET", url, true);
+	xhttp3.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			new Chart(
+				document.getElementById('winsgraphcanvas'),
+				{
+					type: 'polarArea',
+					data: this.response,
+					options: {
+						maintainAspectRation: false,
+						plugins: {
+							legend: {
+								labels: {
+									font:{
+										family: fontFamily
+									}
+								}
+							},
+							title: {
+								display: true,
+								text: 'Game Wins',
+								font: {
+									family: fontFamily
+								}
+							}
+						},
+						scale: {
+							ticks: {
+								precision: 0
+							}
+						}
+					}
+				}
+			);
+		}
+	}
+	xhttp3.send();
 });

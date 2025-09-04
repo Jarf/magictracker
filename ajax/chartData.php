@@ -69,15 +69,28 @@ switch ($chartType) {
 			}
 		}
 		break;
+
+	case 'wins':
+		$data = $stats->getWinsChartData();
+		$return['datasets'][0]['data'] = array();
+		foreach($players as $pid => $player){
+			$return['labels'][$pid] = $player;
+		}
+		foreach($data as $pid => $wins){
+			$playerdatasets[0]['data'][$pid] = $wins;
+		}
+		break;
 	
 	default:
 		display404();
 		break;
 }
 
-$return['datasets'] = array_values($playerdatasets);
-foreach($return['datasets'] as $did => $data){
-	$return['datasets'][$did]['data'] = array_values($data['data']);
+if(isset($return['datasets'])){
+	$return['datasets'] = array_values($playerdatasets);
+	foreach($return['datasets'] as $did => $data){
+		$return['datasets'][$did]['data'] = array_values($data['data']);
+	}
 }
 $return['labels'] = array_values($return['labels']);
 print json_encode($return);
