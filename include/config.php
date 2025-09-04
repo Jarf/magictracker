@@ -9,6 +9,7 @@ define('DB_TYPE', 'mysql');
 // File Paths
 define('DIR_ROOT', dirname(__DIR__) . '/');
 define('DIR_VENDOR', DIR_ROOT . 'vendor/');
+define('DIR_MODULES', DIR_ROOT . 'node_modules/');
 define('DIR_CSS', DIR_ROOT . 'css/');
 define('DIR_JS', DIR_ROOT . 'js/');
 define('DIR_INCLUDE', DIR_ROOT . 'include/');

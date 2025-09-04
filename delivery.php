@@ -35,6 +35,11 @@ switch ($type) {
 		$minifier = new Minify\JS;
 
 		switch ($file) {
+			case 'stats':
+				$files[] = DIR_MODULES . 'chart.js/dist/chart.umd.js';
+				$files[] = DIR_JS . 'stats.js';
+				break;
+
 			default:
 				$default = DIR_JS . $file . '.js';
 				if(!file_exists($default)){
