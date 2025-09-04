@@ -1255,5 +1255,23 @@ class Stats{
 		}
 		return $return;
 	}
+
+	public function getKDChartData(){
+		$return = array();
+		$sql = 'SELECT game.id, game.date, kills.killerId, kills.killedId FROM kills JOIN game ON kills.gameId = game.id';
+		if(isset($this->seasonId)){
+			$sql .= ' WHERE game.seasonId = :seasonId';
+		}
+		$sql .= ' ORDER BY game.id ASC';
+		$this->db->query($sql);
+		if(isset($this->seasonId)){
+			$this->db->bind('seasonId', $this->seasonId);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$return = $this->db->fetchAll();
+		}
+		return $return;
+	}
 }
 ?>
