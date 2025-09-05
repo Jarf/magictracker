@@ -1307,5 +1307,34 @@ class Stats{
 		}
 		return $return;
 	}
+
+	public function getKillsChartData(){
+		$return = array();
+		$players = new player();
+		$players = $players->getPlayerIdNameMap();
+		foreach($players as $pid => $player){
+			$return[$pid] = array();
+			foreach($players as $npid => $nplayer){
+				$return[$pid][$npid] = 0;
+			}
+		}
+		$sql = 'SELECT kills.killerId, kills.killedId, COUNT(kills.killedId) AS killedCount FROM kills JOIN game ON kills.gameId = game.id';
+		if(isset($this->seasonId)){
+			$sql .= ' WHERE game.seasonId = :seasonId';
+		}
+		$sql .= ' GROUP BY kills.killerId, kills.killedId ORDER BY kills.killerId';
+		$this->db->query($sql);
+		if(isset($this->seasonId)){
+			$this->db->bind('seasonId', $this->seasonId);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$rs = $this->db->fetchAll();
+			foreach($rs as $row){
+				$return[$row->killerId][$row->killedId] = $row->killedCount;
+			}
+		}
+		return $return;
+	}
 }
 ?>

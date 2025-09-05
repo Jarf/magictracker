@@ -104,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					type: 'polarArea',
 					data: this.response,
 					options: {
-						maintainAspectRatio: false,
 						aspectRatio: 1,
 						plugins: {
 							legend: {
@@ -133,4 +132,49 @@ document.addEventListener('DOMContentLoaded', function(event) {
 		}
 	}
 	xhttp3.send();
+
+	// Kills radar chart
+	url = '/ajax/chartData.php?chart=kills';
+	if(seasonId !== ''){
+		url += '&season=' + seasonId;
+	}
+	let xhttp4 = new XMLHttpRequest();
+	xhttp4.responseType = 'json';
+	xhttp4.open("GET", url, true);
+	xhttp4.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			new Chart(
+				document.getElementById('killsgraphcanvas'),
+				{
+					type: 'radar',
+					data: this.response,
+					options: {
+						aspectRatio: 1,
+						plugins: {
+							legend: {
+								labels: {
+									font:{
+										family: fontFamily
+									}
+								}
+							},
+							title: {
+								display: true,
+								text: 'Kills',
+								font: {
+									family: fontFamily
+								}
+							}
+						},
+						scale: {
+							ticks: {
+								precision: 0
+							}
+						}
+					}
+				}
+			);
+		}
+	}
+	xhttp4.send();
 });

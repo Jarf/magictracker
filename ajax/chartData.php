@@ -80,6 +80,17 @@ switch ($chartType) {
 			$playerdatasets[0]['data'][$pid] = $wins;
 		}
 		break;
+
+	case 'kills':
+		$data = $stats->getKillsChartData();
+		foreach($players as $pid => $player){
+			$return['labels'][$pid] = $player;
+		}
+		foreach($data as $pid => $kills){
+			$playerdatasets[$pid]['label'] = $players[$pid];
+			$playerdatasets[$pid]['data'] = $kills;
+		}
+		break;
 	
 	default:
 		display404();
