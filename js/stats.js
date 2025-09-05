@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					type: 'line',
 					data: this.response,
 					options: {
+						maintainAspectRatio: false,
+						aspectRatio: 1,
 						plugins: {
 							legend: {
 								labels: {
@@ -61,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					type: 'line',
 					data: this.response,
 					options: {
+						maintainAspectRatio: false,
+						aspectRatio: 1,
 						plugins: {
 							legend: {
 								labels: {
@@ -100,7 +104,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 					type: 'polarArea',
 					data: this.response,
 					options: {
-						maintainAspectRation: false,
+						maintainAspectRatio: false,
+						aspectRatio: 1,
 						plugins: {
 							legend: {
 								labels: {

@@ -17,7 +17,3 @@ div#statscontainer > div.statsitem{
 	flex-grow: 1;
 	padding: 0 8px;
 }
-
-div.graphcontainer > canvas{
-	max-height: 100vh;
-}
