@@ -32,7 +32,9 @@ class Stats{
 			'Attendance' => $this->getAttendance(),
 			'Win Streaks' => $this->getConsecutiveWins(),
 			'Loss Streaks' => $this->getConsecutiveLosses(),
-			'Last Scored Point' => $this->getLastPointScored()
+			'Last Scored Point' => $this->getLastPointScored(),
+			'Kills Per Game' => $this->getKillsPerGame(),
+			'Points Per Game' => $this->getPointsPerGame()
 		);
 		if(!isset($this->seasonId)){
 			$return['Season Wins'] = $this->getSeasonWins();
@@ -1238,6 +1240,108 @@ class Stats{
 		return array($return);
 	}
 
+	private function getKillsPerGame(){
+		$return = $gamekills = array();
+		$players = new player();
+		$players = $players->getPlayerIdNameMap();
+		foreach($players as $pid => $player){
+			$return[$pid] = 0;
+			$gamekills[$pid] = array();
+		}
+		$sql = 'SELECT game.id FROM game';
+		if(isset($this->seasonId)){
+			$sql .= ' WHERE game.seasonId = :seasonId';
+		}
+		$this->db->query($sql);
+		if(isset($this->seasonId)){
+			$this->db->bind('seasonId', $this->seasonId);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$games = $this->db->fetchAll();
+			foreach($games as $game){
+				foreach($players as $pid => $player){
+					$gamekills[$pid][$game->id] = 0;
+				}
+			}
+			$sql = 'SELECT kills.gameId, kills.killerId FROM kills JOIN game ON kills.gameId = game.id WHERE kills.killerId != kills.killedId';
+			if(isset($this->seasonId)){
+				$sql .= ' AND game.seasonId = :seasonId';
+			}
+			$sql .= ' ORDER BY kills.gameId, kills.killerId';
+			$this->db->query($sql);
+			if(isset($this->seasonId)){
+				$this->db->bind('seasonId', $this->seasonId);
+			}
+			$this->db->execute();
+			if($this->db->rowCount() > 0){
+				$kills = $this->db->fetchAll();
+				foreach($kills as $kill){
+					$gamekills[$kill->killerId][$kill->gameId]++;
+				}
+			}
+		}
+		foreach($gamekills as $pid => $playerkills){
+			$return[$pid] = array_sum($playerkills)/count($playerkills);
+		}
+		arsort($return);
+		foreach($return as $pid => $average){
+			$return[$pid] = $players[$pid] . ': ' . round($average,2);
+		}
+		return $return;
+	}
+
+	private function getPointsPerGame(){
+		$return = $gamepoints = array();
+		$players = new player();
+		$players = $players->getPlayerIdNameMap();
+		foreach($players as $pid => $player){
+			$return[$pid] = 0;
+			$gamepoints[$pid] = array();
+		}
+		$sql = 'SELECT game.id FROM game';
+		if(isset($this->seasonId)){
+			$sql .= ' WHERE game.seasonId = :seasonId';
+		}
+		$this->db->query($sql);
+		if(isset($this->seasonId)){
+			$this->db->bind('seasonId', $this->seasonId);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() > 0){
+			$games = $this->db->fetchAll();
+			foreach($games as $game){
+				foreach($players as $pid => $player){
+					$gamepoints[$pid][$game->id] = 0;
+				}
+			}
+			$sql = 'SELECT points.gameId, points.playerId, points.points FROM points JOIN game ON points.gameId = game.id';
+			if(isset($this->seasonId)){
+				$sql .= ' WHERE game.seasonId = :seasonId';
+			}
+			$sql .= ' ORDER BY points.gameId, points.playerId';
+			$this->db->query($sql);
+			if(isset($this->seasonId)){
+				$this->db->bind('seasonId', $this->seasonId);
+			}
+			$this->db->execute();
+			if($this->db->rowCount() > 0){
+				$points = $this->db->fetchAll();
+				foreach($points as $point){
+					$gamepoints[$point->playerId][$point->gameId] += $point->points;
+				}
+			}
+		}
+		foreach($gamepoints as $pid => $playerpoints){
+			$return[$pid] = array_sum($playerpoints)/count($playerpoints);
+		}
+		arsort($return);
+		foreach($return as $pid => $average){
+			$return[$pid] = $players[$pid] . ': ' . round($average,2);
+		}
+		return $return;
+	}
+
 	public function getPointsChartData(){
 		$return = array();
 		$sql = 'SELECT game.id, game.date, points.points, points.playerId FROM points JOIN game ON points.gameId = game.id';
@@ -1333,6 +1437,24 @@ class Stats{
 			foreach($rs as $row){
 				$return[$row->killerId][$row->killedId] = $row->killedCount;
 			}
+		}
+		return $return;
+	}
+
+	private function getGameCount(){
+		$return = 0;
+		$sql = 'SELECT COUNT(game.id) AS count FROM game';
+		if(isset($this->seasonId)){
+			$sql .= ' WHERE game.seasonId = :seasonId';
+		}
+		$this->db->query($sql);
+		if(isset($this->seasonId)){
+			$this->db->bind('seasonId', $this->seasonId);
+		}
+		$this->db->execute();
+		if($this->db->rowCount() === 1){
+			$rs = $this->db->fetch();
+			$return = $rs->count;
 		}
 		return $return;
 	}
