@@ -1282,7 +1282,9 @@ class Stats{
 			}
 		}
 		foreach($gamekills as $pid => $playerkills){
-			$return[$pid] = array_sum($playerkills)/count($playerkills);
+			if(array_sum($playerkills) > 0 && count($playerkills) > 0){
+				$return[$pid] = array_sum($playerkills)/count($playerkills);
+			}
 		}
 		arsort($return);
 		foreach($return as $pid => $average){
@@ -1333,7 +1335,9 @@ class Stats{
 			}
 		}
 		foreach($gamepoints as $pid => $playerpoints){
-			$return[$pid] = array_sum($playerpoints)/count($playerpoints);
+			if(array_sum($playerpoints) > 0 && count($playerpoints) > 0){
+				$return[$pid] = array_sum($playerpoints)/count($playerpoints);
+			}
 		}
 		arsort($return);
 		foreach($return as $pid => $average){
